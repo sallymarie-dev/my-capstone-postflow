@@ -35,6 +35,18 @@ app.post('/posts', async (req, res) => {
   res.status(201).json(data[0]);
 });
 
+app.get('/posts', async (req, res) => {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
