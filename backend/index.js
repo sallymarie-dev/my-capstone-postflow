@@ -65,6 +65,23 @@ app.get('/posts/:id', async (req, res) => {
   res.json(data);
 });
 
+// ✅ DELETE QUOTE BY ID
+app.delete('/posts/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', id)
+    .select();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json({ message: `Quote with id ${id} deleted.`, deleted: data[0] });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
