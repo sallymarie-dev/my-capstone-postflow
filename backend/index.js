@@ -48,6 +48,23 @@ app.get('/posts', async (req, res) => {
   res.json(data);
 });
 
+//  GET SINGLE QUOTE BY ID
+app.get('/posts/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', id)
+    .single(); // gets just one row
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
