@@ -1,7 +1,7 @@
-import express from 'express';
-import 'dotenv/config';
-import cors from 'cors';
-import { supabase } from './supabase.js';
+import express from "express";
+import "dotenv/config";
+import cors from "cors";
+import { supabase } from "./supabase.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,20 +11,20 @@ app.use(cors());
 app.use(express.json());
 
 // Health check
-app.get('/', (req, res) => {
-  res.json({ message: 'PostFlow API is running' });
+app.get("/", (req, res) => {
+  res.json({ message: "PostFlow API is running" });
 });
 
 // CREATE A NEW QUOTE
-app.post('/posts', async (req, res) => {
+app.post("/posts", async (req, res) => {
   const { author, quote } = req.body;
 
   if (!author || !quote) {
-    return res.status(400).json({ error: 'Author and quote are required' });
+    return res.status(400).json({ error: "Author and quote are required" });
   }
 
   const { data, error } = await supabase
-    .from('posts')
+    .from("post_flow")
     .insert([{ author, quote }])
     .select();
 
@@ -35,11 +35,11 @@ app.post('/posts', async (req, res) => {
   res.status(201).json(data[0]);
 });
 
-app.get('/posts', async (req, res) => {
+app.get("/posts", async (req, res) => {
   const { data, error } = await supabase
-    .from('posts')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .from("post_flow")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   if (error) {
     return res.status(500).json({ error: error.message });
@@ -49,13 +49,13 @@ app.get('/posts', async (req, res) => {
 });
 
 //  GET SINGLE QUOTE BY ID
-app.get('/posts/:id', async (req, res) => {
+app.get("/posts/:id", async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', id)
+    .from("post_flow")
+    .select("*")
+    .eq("id", id)
     .single(); // gets just one row
 
   if (error) {
@@ -65,14 +65,14 @@ app.get('/posts/:id', async (req, res) => {
   res.json(data);
 });
 
-// ✅ DELETE QUOTE BY ID
-app.delete('/posts/:id', async (req, res) => {
+// DELETE QUOTE BY ID
+app.delete("/posts/:id", async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('posts')
+    .from("post_flow")
     .delete()
-    .eq('id', id)
+    .eq("id", id)
     .select();
 
   if (error) {
