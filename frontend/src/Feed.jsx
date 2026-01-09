@@ -1,32 +1,29 @@
-// import PostForm from "./PostForm";
-// import PostList from "./PostList";
-
-// export default function Feed({ user, onLogout }) {
-//   return (
-//     <div>
-//       <h2>Welcome, {user}</h2>
-//       <button onClick={onLogout}>Logout</button>
-//       {<PostForm user={user} />}
-//       <PostList />
-//     </div>
-//   );
-// }
-
-// i
-
 import PostForm from "./PostForm";
 import PostList from "./PostList";
-
+import "./Feed.css";
 export default function Feed({ user, onLogout }) {
   return (
-    <div className="splash-container">
-      <h1 className="logo">PostFlow</h1>
-      <p className="tagline">Welcome, {user.name}</p>
+    <div className="feed-page">
+      {/* Logo in top-left corner */}
+      <img src="/postflow-img.png" alt="PostFlow Logo" className="feed-logo" />
 
-      <button className="btn btn-secondary" onClick={onLogout}>
+      {/* Welcome message */}
+      <p className="feed-tagline">Welcome, {user.name || user}</p>
+
+      {/* Navigation bar */}
+      <div className="nav-bar">
+        <button className="nav-btn">Home</button>
+        <button className="nav-btn">Explore</button>
+        <button className="nav-btn">Create</button>
+        <button className="nav-btn">Profile</button>
+      </div>
+
+      {/* Logout button */}
+      <button className="btn btn-secondary logout-btn" onClick={onLogout}>
         Logout
       </button>
 
+      {/* Posts */}
       <PostForm user={user} />
       <PostList />
     </div>
