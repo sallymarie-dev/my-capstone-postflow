@@ -6,29 +6,8 @@ import UserProfile from "./UserProfile";
 
 export default function Feed({ user, onLogout }) {
   const navigate = useNavigate();
-  const [quotes, setQuotes] = useState([]); // store backend quotes
+  const [quotes, setQuotes] = useState([]); // currently empty
   const [loading, setLoading] = useState(false);
-
-  // Fetch backend quotes (Explore)
-  async function handleExplore() {
-    setLoading(true);
-
-    try {
-      const response = await fetch("http://localhost:3000/posts");
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setQuotes(data); // backend now returns array directly
-    } catch (err) {
-      console.error("Error fetching backend quotes:", err);
-      setQuotes([]); // fallback if error occurs
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <div className="feed-page">
@@ -40,7 +19,7 @@ export default function Feed({ user, onLogout }) {
 
       {/* Navigation */}
       <div className="nav-bar">
-        <button className="nav-btn" onClick={handleExplore}>
+        <button className="nav-btn">
           Explore
         </button>
         <button className="nav-btn">Create</button>
