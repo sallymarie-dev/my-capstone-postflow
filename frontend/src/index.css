@@ -1,68 +1,102 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
+/* Login page wrapper */
+.login-page {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  align-items: center; /* centers horizontally */
+  justify-content: center; /* centers vertically */
+  height: 100vh; /* full viewport height */
+  width: 100%;
+  text-align: center;
+  background-color: #ffffff; /* white background */
+  padding: 0 16px;
+  overflow: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Logo wrapper */
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 48px; /* space below logo */
 }
 
-button {
+.logo-img {
+  width: 300px; /* fixed logo size */
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* Tagline text */
+.tagline {
+  font-size: 35px;
+  color: #014421; /* dark green */
+  margin-bottom: 32px;
+}
+
+/* Name input */
+.name-box {
+  width: 500px; /* fixed width */
+  max-width: 90%; /* scales on smaller screens */
+  padding: 16px;
+  font-size: 16px;
+  border: 2px solid #014421;
+  border-radius: 12px;
+  outline: none;
+  text-align: center;
+  margin-bottom: 24px;
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* Container for login button */
+.container {
+  width: 400px;
+  max-width: 90%;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 16px;
+}
+
+/* Login button */
+.btn {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #014421, #006622);
+  border: none;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logo-img {
+    width: 200px;
   }
-  a:hover {
-    color: #747bff;
+
+  .tagline {
+    font-size: 24px;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .name-box {
+    width: 90%;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .container {
+    width: 90%;
+    padding: 16px;
   }
 }
