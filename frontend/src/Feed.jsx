@@ -21,7 +21,7 @@ export default function Feed({ user, onLogout }) {
       }
 
       const data = await response.json();
-      setQuotes(data); // directly set backend quotes
+      setQuotes(data); // backend now returns array directly
     } catch (err) {
       console.error("Error fetching backend quotes:", err);
       setQuotes([]); // fallback if error occurs
