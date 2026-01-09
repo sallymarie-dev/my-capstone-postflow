@@ -21,8 +21,8 @@ export default function App() {
               element={<Feed user={user} onLogout={() => setUser(null)} />}
             />
             <Route
-              path="/profile"
-              element={<Profile user={user} />}
+              path="/UserProfile"
+              element={<UserProfile user={user} />}
             />
           </>
         )}

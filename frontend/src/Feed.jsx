@@ -63,7 +63,7 @@ export default function Feed({ user, onLogout }) {
         Logout
       </button>
 
-      {/* Post creation form */}
+     
       <PostForm user={user} />
 
       {/* User quotes grid */}
