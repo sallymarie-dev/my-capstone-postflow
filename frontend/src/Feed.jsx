@@ -3,34 +3,31 @@ import { useNavigate } from "react-router-dom";
 import "./Feed.css";
 import postFlowImg from "./assets/PostFlow.png";
 import UserProfile from "./UserProfile";
-import mockData from "./mockData";
 
 export default function Feed({ user, onLogout }) {
   const navigate = useNavigate();
-  const [quotes, setQuotes] = useState(mockData); // start with mock quotes
+  const [quotes, setQuotes] = useState([]); // store backend quotes
   const [loading, setLoading] = useState(false);
-
-  // Show mock data (Home)
-  function handleHome() {
-    setQuotes(mockData);
-  }
 
   // Fetch backend quotes (Explore)
   async function handleExplore() {
     setLoading(true);
-    await fetch("http://localhost:3000/posts")
-      .then((res) => res.json())
-      .then((data) => {
-        // shuffle backend quotes
-        const shuffled = [...data].sort(() => 0.5 - Math.random());
-        setQuotes(shuffled);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log("Error fetching backend quotes:", err);
-        setQuotes([]);
-        setLoading(false);
-      });
+
+    try {
+      const response = await fetch("http://localhost:3000/posts");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setQuotes(data); // directly set backend quotes
+    } catch (err) {
+      console.error("Error fetching backend quotes:", err);
+      setQuotes([]); // fallback if error occurs
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -43,9 +40,6 @@ export default function Feed({ user, onLogout }) {
 
       {/* Navigation */}
       <div className="nav-bar">
-        <button className="nav-btn" onClick={handleHome}>
-          Home
-        </button>
         <button className="nav-btn" onClick={handleExplore}>
           Explore
         </button>
