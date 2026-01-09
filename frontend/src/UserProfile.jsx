@@ -1,11 +1,11 @@
-import React from "react";
-import "./UserProfile.css";
-
-export default function UserProfile({ name, quote }) {
+export default function UserProfile({ name, quote, date }) {
   return (
-    <div className="user-card">
-      <h3 className="user-name">{name}</h3>
-      <p className="user-quote">{quote}</p>
+    <div className="user-profile-card">
+      <p className="quote-text">“{quote}”</p>
+      <div className="profile-footer">
+        <span className="profile-name">@{name}</span>
+        {date && <span className="profile-date">{new Date(date).toLocaleDateString()}</span>}
+      </div>
     </div>
   );
 }

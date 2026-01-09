@@ -1,77 +1,80 @@
-import React, { useEffect, useState } from "react";
-import PostForm from "./PostForm";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Feed.css";
 import postFlowImg from "./assets/PostFlow.png";
 import UserProfile from "./UserProfile";
-import { useNavigate } from "react-router-dom";
+import mockData from "./mockData";
+
 export default function Feed({ user, onLogout }) {
-  // Mock quotes for display
-  const mockQuotes = [
-    { id: 1, author: "Alice", quote: "Life is better with coffee." },
-    { id: 2, author: "Bob", quote: "Code, eat, sleep, repeat." },
-    { id: 3, author: "Charlie", quote: "Adventure awaits." },
-    { id: 4, author: "Diana", quote: "Keep smiling!" },
-    { id: 5, author: "Eve", quote: "Dream big, act bigger." },
-    { id: 6, author: "Frank", quote: "Music is life." },
-    { id: 7, author: "Grace", quote: "Stay positive." },
-    { id: 8, author: "Hank", quote: "Coffee and code." },
-    { id: 9, author: "Ivy", quote: "Explore the world." },
-    { id: 10, author: "Jack", quote: "Create something new today." },
-  ];
+  const navigate = useNavigate();
+  const [quotes, setQuotes] = useState(mockData); // start with mock quotes
+  const [loading, setLoading] = useState(false);
 
-  const [quotes, setQuotes] = useState(mockQuotes);
+  // Show mock data (Home)
+  function handleHome() {
+    setQuotes(mockData);
+  }
 
-  useEffect(() => {
-    async function fetchQuotes() {
-      try {
-        const res = await fetch("http://localhost:3000/posts");
-        if (!res.ok) throw new Error("Network response was not ok");
-        const data = await res.json();
-
-        if (data.length > 0) {
-          // Shuffle backend data for randomness
-          const shuffled = data.sort(() => 0.5 - Math.random());
-          setQuotes(shuffled);
-        }
-      } catch (err) {
-        console.error("Error fetching backend quotes:", err);
-        // keep showing mock quotes
-      }
-    }
-
-    fetchQuotes();
-  }, []);
+  // Fetch backend quotes (Explore)
+  function handleExplore() {
+    setLoading(true);
+    fetch("http://localhost:3000/posts")
+      .then((res) => res.json())
+      .then((data) => {
+        // shuffle backend quotes
+        const shuffled = [...data].sort(() => 0.5 - Math.random());
+        setQuotes(shuffled);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error fetching backend quotes:", err);
+        setQuotes([]);
+        setLoading(false);
+      });
+  }
 
   return (
     <div className="feed-page">
-      {/* Logo top-left */}
+      {/* Logo */}
       <img src={postFlowImg} alt="PostFlow Logo" className="feed-logo" />
 
-      {/* Welcome message */}
+      {/* Welcome */}
       <p className="feed-tagline">Welcome, {user?.name || "Guest"}</p>
 
-      {/* Navigation bar */}
+      {/* Navigation */}
       <div className="nav-bar">
-        <button className="nav-btn">Home</button>
-        <button className="nav-btn">Explore</button>
+        <button className="nav-btn" onClick={handleHome}>
+          Home
+        </button>
+        <button className="nav-btn" onClick={handleExplore}>
+          Explore
+        </button>
         <button className="nav-btn">Create</button>
-        <button className="nav-btn">Profile</button>
+        <button className="nav-btn" onClick={() => navigate("/profile")}>
+          Profile
+        </button>
       </div>
 
-      {/* Logout button */}
+      {/* Logout */}
       <button className="btn logout-btn" onClick={onLogout}>
         Logout
       </button>
 
-     
-      <PostForm user={user} />
-
-      {/* User quotes grid */}
-      <div className="user-profiles-grid">
-        {quotes.map((q) => (
-          <UserProfile key={q.id} name={q.author} quote={q.quote} />
-        ))}
-      </div>
+      {/* Quotes grid */}
+      {loading ? (
+        <p>Loading quotes...</p>
+      ) : (
+        <div className="user-profiles-grid">
+          {quotes.map((q) => (
+            <UserProfile
+              key={q.id}
+              name={q.author}
+              quote={q.quote}
+              date={q.created_at}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
