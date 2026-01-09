@@ -1,5 +1,5 @@
 import React from "react";
-import "./Feed.css"; // Using same CSS file
+import "./UserProfile.css";
 
 export default function UserProfile({ name, quote }) {
   return (

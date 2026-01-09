@@ -1,76 +1,71 @@
+/* Login page wrapper */
 .login-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 1000px;
-  width: 1000px;
-  max-width: 100%;
+  align-items: center; /* centers horizontally */
+  justify-content: center; /* centers vertically */
+  height: 100vh; /* full viewport height */
+  width: 100%;
   text-align: center;
-  background-color: #f8f7f7;
+  background-color: #ffffff; /* white background */
   padding: 0 16px;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
+/* Logo wrapper */
 .logo-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 32px;
   width: 100%;
+  margin-bottom: 48px; /* space below logo */
 }
 
 .logo-img {
-  width: 300px;
+  width: 300px; /* fixed logo size */
   height: auto;
   border-radius: 12px;
-  box-shadow: 0px 8px 32px rgba(0,0,0,0.5);
-  display: block;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
 
+/* Tagline text */
 .tagline {
-  font-size: 30px;
-  color: #105503;
+  font-size: 35px;
+  color: #014421; /* dark green */
   margin-bottom: 32px;
 }
 
+/* Name input */
 .name-box {
-  width: 400px;
-  padding: 20px 24px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: rgba(0,0,0,0.7);
+  width: 500px; /* fixed width */
+  max-width: 90%; /* scales on smaller screens */
+  padding: 16px;
+  font-size: 16px;
   border: 2px solid #014421;
   border-radius: 12px;
   outline: none;
   text-align: center;
-  margin-bottom: 32px;
-  box-shadow: 0px 6px 16px rgba(0,0,0,0.4);
-  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  background-color: rgba(0,0,0,0.05);
 }
 
-.name-box:focus {
-  border-color: #00cc44;
-  box-shadow: 0px 6px 20px rgba(0,204,68,0.5);
-}
-
+/* Container for login button */
 .container {
   width: 400px;
-  padding: 32px;
-  background-color: rgba(0,0,0,0.6);
-  border-radius: 16px;
-  box-shadow: 0px 8px 32px rgba(0,0,0,0.4);
-  backdrop-filter: blur(8px);
+  max-width: 90%;
+  padding: 24px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 16px;
 }
 
+/* Login button */
 .btn {
   width: 100%;
-  padding: 16px 24px;
+  padding: 12px 24px;
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
@@ -78,19 +73,13 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0px 6px 16px rgba(0,0,0,0.5);
+  opacity: 0.9;
 }
 
-.logo {
-  display: none;
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .logo-img {
     width: 200px;
@@ -102,12 +91,12 @@
 
   .name-box {
     width: 90%;
-    font-size: 16px;
-    padding: 16px 20px;
+    font-size: 14px;
+    padding: 12px;
   }
 
   .container {
     width: 90%;
-    padding: 24px;
+    padding: 16px;
   }
 }
