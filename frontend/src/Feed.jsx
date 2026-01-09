@@ -3,9 +3,9 @@ import PostForm from "./PostForm";
 import "./Feed.css";
 import postFlowImg from "./assets/PostFlow.png";
 import UserProfile from "./UserProfile";
-
+import { useNavigate } from "react-router-dom";
 export default function Feed({ user, onLogout }) {
-  // Mock quotes for immediate display
+  // Mock quotes for display
   const mockQuotes = [
     { id: 1, author: "Alice", quote: "Life is better with coffee." },
     { id: 2, author: "Bob", quote: "Code, eat, sleep, repeat." },
@@ -24,7 +24,7 @@ export default function Feed({ user, onLogout }) {
   useEffect(() => {
     async function fetchQuotes() {
       try {
-        const res = await fetch("http://localhost:3000/posts"); // Backend endpoint
+        const res = await fetch("http://localhost:3000/posts");
         if (!res.ok) throw new Error("Network response was not ok");
         const data = await res.json();
 
@@ -35,7 +35,7 @@ export default function Feed({ user, onLogout }) {
         }
       } catch (err) {
         console.error("Error fetching backend quotes:", err);
-        // Fallback: keep showing mock quotes
+        // keep showing mock quotes
       }
     }
 
