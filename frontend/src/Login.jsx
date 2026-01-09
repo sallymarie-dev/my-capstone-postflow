@@ -24,6 +24,7 @@
 
 
 import { useState } from "react";
+import postFlowImg from "./assets/PostFlow.png"; // Add your PostFlow logo/image here
 
 export default function Login({ onLogin }) {
   const [name, setName] = useState("");
@@ -35,19 +36,32 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="splash-container">
-      <h1 className="logo">PostFlow</h1>
+    <div className="login-page">
+      {/* Centered logo image */}
+      <div className="logo-wrapper">
+        <img src={postFlowImg} alt="PostFlow Logo" className="logo-img" />
+      </div>
+
+      {/* Optional tagline */}
       <p className="tagline">Share Life’s Moments</p>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      {/* Name input box */}
+      <input
+        type="text"
+        className="name-box"
+        placeholder="Enter your name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-        <button className="btn btn-primary">Login</button>
-      </form>
+      {/* Login button */}
+      <div className="container">
+        <form onSubmit={handleSubmit}>
+          <button className="btn">Login</button>
+        </form>
+      </div>
     </div>
   );
 }
+
+
