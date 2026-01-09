@@ -1,0 +1,24 @@
+.user-profile {
+  background-color: #f0f0f0; /* light grey */
+  color: #000000;
+  padding: 16px;
+  border-radius: 12px;
+  width: 220px; /* fixed card width */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-profile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.user-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.user-quote {
+  font-style: italic;
+  color: #333333;
+}

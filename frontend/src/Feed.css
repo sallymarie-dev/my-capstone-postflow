@@ -1,106 +1,130 @@
-/* Feed page wrapper */
 .feed-page {
+  background-color: #ffffff;
+  min-height: 1000px;
+  padding: 16px;
   position: relative;
-  padding: 32px;
-  min-height: 1000px; /* adjust if needed for page height */
-  background-color: #ffffff; /* white background */
-  color: #000000;
-  font-family: 'Roboto', sans-serif;
+  font-family: Arial, sans-serif;
 }
 
-/* Logo in top-left corner */
+/* Top-left logo */
 .feed-logo {
-  position: fixed;
+  position: absolute;
   top: 16px;
   left: 16px;
-  width: 60px; /* small logo */
+  width: 60px;
   height: 60px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 100;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
 
 /* Welcome tagline */
 .feed-tagline {
-  font-size: 35px; /* requested font size */
+  font-size: 35px;
+  margin-left: 100px; /* to avoid overlapping logo */
+  margin-top: 16px;
   font-weight: 600;
-  margin-top: 0;
-  margin-left: 100px; /* space for logo */
-  margin-bottom: 24px;
-  color: #014421; /* dark green */
+  color: #014421;
 }
 
 /* Navigation bar */
 .nav-bar {
   display: flex;
-  justify-content: space-evenly; /* spread buttons evenly */
-  margin-left: 100px;
-  margin-bottom: 32px;
+  justify-content: space-evenly;
+  margin-top: 16px;
+  margin-left: 100px; /* same offset as tagline */
+  margin-right: 16px;
 }
 
-/* Navigation buttons */
 .nav-btn {
+  font-size: 20px;
   padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, #014421, #006622);
+  background-color: #f0f0f0;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
 }
 
 .nav-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  background-color: #e0e0e0;
 }
 
 /* Logout button */
 .logout-btn {
   margin-left: 100px;
-  margin-bottom: 32px;
-  padding: 12px 24px;
+  margin-top: 16px;
   background: linear-gradient(135deg, #014421, #006622);
   color: #ffffff;
-  border: none;
+  padding: 12px 24px;
   border-radius: 8px;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-}
-
-/* Make feed content avoid overlapping logo */
-.feed-page > *:not(.feed-logo) {
+/* User profiles / Pinterest-style grid */
+.user-profiles-section {
   margin-left: 100px;
+  margin-top: 40px;
 }
 
-/* Responsive adjustments */
+.user-profiles-section h2 {
+  font-size: 28px;
+  color: #014421;
+  margin-bottom: 16px;
+}
+
+.user-profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* UserProfile card */
+.user-card {
+  background-color: #f0f0f0;
+  color: #000;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  word-break: break-word;
+}
+
+.user-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.user-quote {
+  font-style: italic;
+  margin: 0;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .feed-logo {
     width: 50px;
     height: 50px;
   }
 
-  .feed-tagline,
-  .nav-bar,
-  .logout-btn,
-  .feed-page > *:not(.feed-logo) {
-    margin-left: 70px;
+  .feed-tagline {
+    font-size: 28px;
+    margin-left: 16px;
   }
 
   .nav-bar {
     flex-wrap: wrap;
-    gap: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
-  .nav-btn {
-    flex: 1 1 auto;
-    text-align: center;
+  .logout-btn {
+    margin-left: 16px;
+  }
+
+  .user-profiles-section {
+    margin-left: 16px;
+    margin-right: 16px;
   }
 }

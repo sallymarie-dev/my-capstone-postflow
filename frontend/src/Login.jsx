@@ -24,8 +24,7 @@
 
 
 import { useState } from "react";
-import postFlowImg from "./assets/PostFlow.png"; // Add your PostFlow logo/image here
-
+import postFlowImg from "./assets/PostFlow.png"; 
 export default function Login({ onLogin }) {
   const [name, setName] = useState("");
 

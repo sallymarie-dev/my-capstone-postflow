@@ -1,14 +1,30 @@
+import React, { useEffect, useState } from "react";
 import PostForm from "./PostForm";
 import PostList from "./PostList";
+import UserProfile from "./UserProfile";
 import "./Feed.css";
+import postFlowImg from "./assets/PostFlow.png";
+
 export default function Feed({ user, onLogout }) {
+  // Mock profiles
+  const [profiles, setProfiles] = useState([
+    { name: "Alice", quote: "Life is better with coffee." },
+    { name: "Bob", quote: "Code, eat, sleep, repeat." },
+    { name: "Charlie", quote: "Adventure awaits." },
+    { name: "Diana", quote: "Keep smiling!" },
+    { name: "Eve", quote: "Dream big and hustle hard." },
+    { name: "Frank", quote: "Stay curious, stay humble." },
+    { name: "Grace", quote: "Kindness is contagious." },
+    { name: "Hank", quote: "Make every day count." },
+  ]);
+
   return (
     <div className="feed-page">
-      {/* Logo in top-left corner */}
-      <img src="/postflow-img.png" alt="PostFlow Logo" className="feed-logo" />
+      {/* Small logo top-left */}
+      <img src={postFlowImg} alt="PostFlow Logo" className="feed-logo" />
 
-      {/* Welcome message */}
-      <p className="feed-tagline">Welcome, {user.name || user}</p>
+      {/* Welcome text */}
+      <p className="feed-tagline">Welcome, {user?.name || "Guest"}</p>
 
       {/* Navigation bar */}
       <div className="nav-bar">
@@ -26,6 +42,16 @@ export default function Feed({ user, onLogout }) {
       {/* Posts */}
       <PostForm user={user} />
       <PostList />
+
+      {/* User Profiles / Quotes Section */}
+      <div className="user-profiles-section">
+        <h2>User Quotes</h2>
+        <div className="user-profiles-grid">
+          {profiles.map((p, index) => (
+            <UserProfile key={index} name={p.name} quote={p.quote} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
