@@ -35,28 +35,15 @@ app.post("/posts", async (req, res) => {
   res.status(201).json(data[0]);
 });
 
-// GET QUOTES WITH PAGINATION
+// GET ALL QUOTES (no pagination, no limit)
 app.get("/posts", async (req, res) => {
-  const page = Number(req.query.page) || 1; // Default page 1
-  const limit = 10; // 10 quotes per page
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
-
-  const { data, error } = await supabase
-    .from("post_flow")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .range(start, end); // <-- returns only this range
+  const { data, error } = await supabase.from("post_flow").select("*");
 
   if (error) {
     return res.status(500).json({ error: error.message });
   }
 
-  res.json({
-    page,
-    limit,
-    quotes: data,
-  });
+  res.json(data);
 });
 
 // GET SINGLE QUOTE BY ID
