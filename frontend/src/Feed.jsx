@@ -16,9 +16,9 @@ export default function Feed({ user, onLogout }) {
   }
 
   // Fetch backend quotes (Explore)
-  function handleExplore() {
+  async function handleExplore() {
     setLoading(true);
-    fetch("http://localhost:3000/posts")
+    await fetch("http://localhost:3000/posts")
       .then((res) => res.json())
       .then((data) => {
         // shuffle backend quotes
