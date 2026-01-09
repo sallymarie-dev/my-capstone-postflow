@@ -35,25 +35,31 @@ app.post("/posts", async (req, res) => {
   res.status(201).json(data[0]);
 });
 
+// GET QUOTES WITH PAGINATION
 app.get("/posts", async (req, res) => {
-  const page = Number(req.query.page) || 1;
-  const limit = 10;
+  const page = Number(req.query.page) || 1; // Default page 1
+  const limit = 10; // 10 quotes per page
   const start = (page - 1) * limit;
   const end = start + limit - 1;
+
   const { data, error } = await supabase
     .from("post_flow")
     .select("*")
     .order("created_at", { ascending: false })
-    .range(start, end);
+    .range(start, end); // <-- returns only this range
 
   if (error) {
     return res.status(500).json({ error: error.message });
   }
 
-  res.json(data);
+  res.json({
+    page,
+    limit,
+    quotes: data,
+  });
 });
 
-//  GET SINGLE QUOTE BY ID
+// GET SINGLE QUOTE BY ID
 app.get("/posts/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -61,7 +67,7 @@ app.get("/posts/:id", async (req, res) => {
     .from("post_flow")
     .select("*")
     .eq("id", id)
-    .single(); // gets just one row
+    .single();
 
   if (error) {
     return res.status(500).json({ error: error.message });
@@ -87,6 +93,7 @@ app.delete("/posts/:id", async (req, res) => {
   res.json({ message: `Quote with id ${id} deleted.`, deleted: data[0] });
 });
 
+// START SERVER
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
