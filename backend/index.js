@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-import { supabase } from "./supabase.js";
+import supabase from "./supabase.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,7 +43,7 @@ app.get("/posts", async (req, res) => {
   const { data, error } = await supabase
     .from("post_flow")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
     .range(start, end);
 
   if (error) {
