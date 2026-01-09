@@ -36,10 +36,15 @@ app.post("/posts", async (req, res) => {
 });
 
 app.get("/posts", async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 10;
+  const start = (page - 1) * limit;
+  const end = start + limit - 1;
   const { data, error } = await supabase
     .from("post_flow")
     .select("*")
     .order("created_at", { ascending: false });
+    .range(start, end);
 
   if (error) {
     return res.status(500).json({ error: error.message });
