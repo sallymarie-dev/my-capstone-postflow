@@ -6,21 +6,15 @@ import UserProfile from "./UserProfile";
 
 export default function Feed({ user, onLogout }) {
   const navigate = useNavigate();
-  const [quotes, setQuotes] = useState([]); // currently empty
+  const [quotes, setQuotes] = useState([]);
 
-  // Fetch quotes from your Express API
   const fetchQuotes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/posts"); // update if deployed
-      if (!response.ok) {
-        throw new Error("Failed to fetch quotes");
-      }
+      const response = await fetch("http://localhost:3000/posts");
       const data = await response.json();
-      console.log("Fetched quotes:", data); // 🔍 Debug check
       setQuotes(data);
-    } catch (error) {
-      console.error("Error fetching quotes:", error);
-      alert("Error fetching quotes. Check console for details.");
+    } catch (err) {
+      console.error("Failed to fetch quotes", err);
     }
   };
 
@@ -48,18 +42,21 @@ export default function Feed({ user, onLogout }) {
         Logout
       </button>
 
-      {/* Quotes grid */}
+      {/* Quotes */}
       {quotes.length === 0 ? (
-        <p>No quotes yet. Click Explore to load quotes!</p>
+        <p className="empty-feed">
+          Click <strong>Explore</strong> to load quotes ✨
+        </p>
       ) : (
         <div className="user-profiles-grid">
           {quotes.map((q) => (
-            <UserProfile
-              key={q.id}
-              name={q.author}
-              quote={q.quote}
-              date={q.created_at}
-            />
+            <div className="user-profile-card" key={q.id}>
+              <UserProfile
+                name={q.author}
+                quote={q.quote}
+                date={q.created_at}
+              />
+            </div>
           ))}
         </div>
       )}

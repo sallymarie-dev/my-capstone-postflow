@@ -1,12 +1,12 @@
 .feed-page {
   background-color: #ffffff;
-  min-height: 1000px;
+  min-height: 100vh;
   padding: 16px;
   font-family: Arial, sans-serif;
   position: relative;
 }
 
-/* Logo top-left */
+/* Logo */
 .feed-logo {
   position: absolute;
   top: 16px;
@@ -16,7 +16,7 @@
   border-radius: 8px;
 }
 
-/* Welcome message */
+/* Welcome */
 .feed-tagline {
   font-size: 35px;
   margin-left: 100px;
@@ -47,7 +47,7 @@
   background-color: #e0e0e0;
 }
 
-/* Logout button */
+/* Logout */
 .logout-btn {
   margin-left: 100px;
   margin-top: 16px;
@@ -59,36 +59,58 @@
   cursor: pointer;
 }
 
-/* Post form */
-.post-form {
-  margin-left: 100px;
-  margin-top: 24px;
-  display: flex;
-  gap: 8px;
-}
-
-.post-form input {
-  flex: 1;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.post-form button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  border: none;
-  background-color: #014421;
-  color: white;
-  cursor: pointer;
-}
-
-/* Grid for user posts */
-.user-profiles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+/* Empty feed text */
+.empty-feed {
   margin-left: 100px;
   margin-top: 32px;
+  font-size: 18px;
+  color: #555;
+}
+
+.user-profiles-grid {
+  column-count: 3;
+  column-gap: 16px;
+  margin-left: 100px;
+  margin-top: 32px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .user-profiles-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .user-profiles-grid {
+    column-count: 1;
+    margin-left: 0;
+  }
+}
+
+/* Card */
+.user-profile-card {
+  break-inside: avoid;
+  margin-bottom: 18px;
+  padding: 6px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #030c08, #43f018);
+  box-shadow: 0 12px 28px rgba(1, 68, 33, 0.35);
+  box-shadow: 0 12px 28px rgba(1, 68, 33, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Hover effect */
+.user-profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+}
+
+
+.user-profile-card:nth-child(3n) {
+  background: linear-gradient(135deg, #ecfeff, #ffffff);
+}
+
+.user-profile-card:nth-child(4n) {
+  background: linear-gradient(135deg, #e6f9ef, #ffffff);
 }

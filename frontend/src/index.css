@@ -11,6 +11,13 @@
   padding: 0 16px;
   overflow: hidden;
 }
+.login-quote {
+  margin: 20px 0;
+  text-align: center;
+  font-style: italic;
+  color: #1e3a8a;
+  transition: opacity 0.5s ease-in-out;
+}
 
 /* Logo wrapper */
 .logo-wrapper {
