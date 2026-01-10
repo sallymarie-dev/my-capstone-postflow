@@ -94,7 +94,7 @@
   margin-bottom: 18px;
   padding: 6px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #030c08, #43f018);
+  background: linear-gradient(135deg, #f0ba0b, #ebf5e8);
   box-shadow: 0 12px 28px rgba(1, 68, 33, 0.35);
   box-shadow: 0 12px 28px rgba(1, 68, 33, 0.35);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -113,4 +113,89 @@
 
 .user-profile-card:nth-child(4n) {
   background: linear-gradient(135deg, #e6f9ef, #ffffff);
+}
+/* ================= MODAL OVERLAY ================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Floating box */
+.modal-box {
+  width: 420px;
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #014421, #0a7a3d);
+  box-shadow: 0 30px 60px rgba(1, 68, 33, 0.6);
+  animation: floatIn 0.3s ease;
+}
+
+/* Inner content */
+.modal-box h2 {
+  color: white;
+  margin-bottom: 16px;
+}
+
+.modal-box form {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.modal-box input,
+.modal-box textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.modal-box textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-actions .primary {
+  background: #014421;
+  color: white;
+}
+
+.modal-actions button:hover {
+  opacity: 0.9;
+}
+
+/* Animation */
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
