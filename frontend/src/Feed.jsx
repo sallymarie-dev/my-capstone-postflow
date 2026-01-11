@@ -11,24 +11,25 @@ export default function Feed({ user, onLogout }) {
 
   // Fetch backend quotes (Explore)
   async function handleExplore() {
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:3000/posts");
+  try {
+    const response = await fetch("http://localhost:3000/posts");
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setQuotes(data); // directly set backend quotes
-    } catch (err) {
-      console.error("Error fetching backend quotes:", err);
-      setQuotes([]); // fallback if error occurs
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const data = await response.json();
+    setQuotes(data.quotes); // <-- use the quotes array
+  } catch (err) {
+    console.error("Error fetching backend quotes:", err);
+    setQuotes([]);
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
     <div className="feed-page">
