@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserProfile({ name, quote }) {
   const [profile, setProfile] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   fetch("http://localhost:3000/user_profile")
     .then((response) => response.json())
@@ -15,19 +15,18 @@ export default function UserProfile({ name, quote }) {
 
   return (
     <>
-      {profile.map((p,index) => (
-        <div 
-        key ={index}className="user-profile-card">
+      {profile.map((p, index) => (
+        <div key={index} className="user-profile-card">
           <p className="quote-text">“{p.quote}”</p>
           <div className="profile-footer">
             <span className="profile-name">{p.name}</span>
           </div>
         </div>
-
       ))}
+      <button className="nav-btn" onClick={() => navigate("/feed")}>
+        Back to Feed
+      </button>
+      ;
     </>
   );
-        <button className="nav-btn" onClick={() => navigate("/feed")}>
-          Back to Feed
-        </button>
 }
