@@ -46,6 +46,16 @@ app.get("/posts", async (req, res) => {
   res.json(data);
 });
 
+app.get("/user_profile", async (req, res) => {
+  const { data, error } = await supabase.from("user_profile").select("*");
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
+});
+
 // GET SINGLE QUOTE BY ID
 app.get("/posts/:id", async (req, res) => {
   const { id } = req.params;
