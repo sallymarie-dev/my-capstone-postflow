@@ -6,70 +6,97 @@ import UserProfile from "./UserProfile";
 
 export default function Feed({ user, onLogout }) {
   const navigate = useNavigate();
-  const [quotes, setQuotes] = useState([]); // store backend quotes
-  const [loading, setLoading] = useState(false);
+  const [quotes, setQuotes] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [author, setAuthor] = useState(user?.name || "");
+  const [quote, setQuote] = useState("");
 
-  // Fetch backend quotes (Explore)
-  async function handleExplore() {
-  setLoading(true);
-
-  try {
+  const fetchQuotes = async () => {
     const response = await fetch("http://localhost:3000/posts");
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     const data = await response.json();
-    setQuotes(data.quotes); // <-- use the quotes array
-  } catch (err) {
-    console.error("Error fetching backend quotes:", err);
-    setQuotes([]);
-  } finally {
-    setLoading(false);
-  }
-}
+    setQuotes(data);
+  };
 
+  const submitQuote = async (e) => {
+    e.preventDefault();
+
+    if (!author.trim() || !quote.trim()) return;
+
+    await fetch("http://localhost:3000/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ author, quote }),
+    });
+
+    setQuote("");
+    setShowCreate(false);
+    fetchQuotes();
+  };
 
   return (
     <div className="feed-page">
       {/* Logo */}
       <img src={postFlowImg} alt="PostFlow Logo" className="feed-logo" />
 
-      {/* Welcome */}
       <p className="feed-tagline">Welcome, {user?.name || "Guest"}</p>
 
-      {/* Navigation */}
+      {/* Nav */}
       <div className="nav-bar">
-        <button className="nav-btn" onClick={handleExplore}>
-          Explore
+        <button className="nav-btn" onClick={fetchQuotes}>Explore</button>
+        <button className="nav-btn" onClick={() => setShowCreate(true)}>
+          Create
         </button>
-        <button className="nav-btn">Create</button>
         <button className="nav-btn" onClick={() => navigate("/profile")}>
           Profile
         </button>
       </div>
 
-      {/* Logout */}
-      <button className="btn logout-btn" onClick={onLogout}>
-        Logout
-      </button>
+      <button className="btn logout-btn" onClick={onLogout}>Logout</button>
 
-      {/* Quotes grid */}
-      {loading ? (
-        <p>Loading quotes...</p>
-      ) : (
-        <div className="user-profiles-grid">
-          {quotes.map((q) => (
-            <UserProfile
-              key={q.id}
-              name={q.author}
-              quote={q.quote}
-              date={q.created_at}
-            />
-          ))}
+      
+      {showCreate && (
+        <div className="modal-overlay" onClick={() => setShowCreate(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <h2>Create a Quote</h2>
+
+            <form onSubmit={submitQuote}>
+              <input
+                type="text"
+                placeholder="Your name"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              />
+
+              <textarea
+                placeholder="Write your quote..."
+                value={quote}
+                onChange={(e) => setQuote(e.target.value)}
+              />
+
+              <div className="modal-actions">
+                <button type="button" onClick={() => setShowCreate(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="primary">
+                  Post
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
+
+      {/* Quotes */}
+      <div className="user-profiles-grid">
+        {quotes.map((q) => (
+          <UserProfile
+            key={q.id}
+            name={q.author}
+            quote={q.quote}
+            date={q.created_at}
+          />
+        ))}
+      </div>
     </div>
   );
 }
