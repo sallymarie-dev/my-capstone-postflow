@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Login";
 import Feed from "./Feed";
 import UserProfile from "./UserProfile";
@@ -10,22 +10,22 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        {!user && (
-          <Route path="*" element={<Login onLogin={setUser} />} />
-        )}
+        <Route
+          path="/"
+          element={user ? <Navigate to="/feed" replace /> : <Login onLogin={setUser} />}
+        />
 
-        {user && (
-          <>
-            <Route
-              path="/"
-              element={<Feed user={user} onLogout={() => setUser(null)} />}
-            />
-            <Route
-              path="/profile"
-              element={<UserProfile user={user} />}
-            />
-          </>
-        )}
+        <Route
+          path="/feed"
+          element={user ? <Feed user={user} onLogout={() => setUser(null)} /> : <Navigate to="/" replace />}
+        />
+
+        <Route
+          path="/profile"
+          element={user ? <UserProfile user={user} /> : <Navigate to="/" replace />}
+        />
+
+        <Route path="*" element={<Navigate to={user ? "/feed" : "/"} replace />} />
       </Routes>
     </Router>
   );

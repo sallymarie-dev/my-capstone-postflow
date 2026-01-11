@@ -10,16 +10,20 @@ export default function Feed({ user, onLogout }) {
   const [showCreate, setShowCreate] = useState(false);
   const [author, setAuthor] = useState(user?.name || "");
   const [quote, setQuote] = useState("");
-
+  // Fetch quotes
   const fetchQuotes = async () => {
-    const response = await fetch("http://localhost:3000/posts");
-    const data = await response.json();
-    setQuotes(data);
+    try {
+      const response = await fetch("http://localhost:3000/posts");
+      const data = await response.json();
+      setQuotes(data);
+    } catch (err) {
+      console.error("Error fetching quotes:", err);
+    }
   };
 
+  // Submit new quote
   const submitQuote = async (e) => {
     e.preventDefault();
-
     if (!author.trim() || !quote.trim()) return;
 
     await fetch("http://localhost:3000/posts", {
@@ -33,6 +37,7 @@ export default function Feed({ user, onLogout }) {
     fetchQuotes();
   };
 
+
   return (
     <div className="feed-page">
       {/* Logo */}
@@ -40,20 +45,16 @@ export default function Feed({ user, onLogout }) {
 
       <p className="feed-tagline">Welcome, {user?.name || "Guest"}</p>
 
-      {/* Nav */}
+      {/* Navigation */}
       <div className="nav-bar">
         <button className="nav-btn" onClick={fetchQuotes}>Explore</button>
-        <button className="nav-btn" onClick={() => setShowCreate(true)}>
-          Create
-        </button>
-        <button className="nav-btn" onClick={() => navigate("/profile")}>
-          Profile
-        </button>
+        <button className="nav-btn" onClick={() => setShowCreate(true)}>Create</button>
+        <button className="nav-btn" onClick={() => navigate("/profile")}>Profile</button>
       </div>
 
       <button className="btn logout-btn" onClick={onLogout}>Logout</button>
 
-      
+      {/* Create Modal */}
       {showCreate && (
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -77,16 +78,14 @@ export default function Feed({ user, onLogout }) {
                 <button type="button" onClick={() => setShowCreate(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="primary">
-                  Post
-                </button>
+                <button type="submit" className="primary">Post</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Quotes */}
+      {/* Quotes grid */}
       <div className="user-profiles-grid">
         {quotes.map((q) => (
           <UserProfile
@@ -94,6 +93,7 @@ export default function Feed({ user, onLogout }) {
             name={q.author}
             quote={q.quote}
             date={q.created_at}
+            randomHeight={Math.floor(Math.random() * 150) + 120} 
           />
         ))}
       </div>
