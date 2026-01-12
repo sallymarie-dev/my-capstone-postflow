@@ -34,7 +34,24 @@ app.post("/posts", async (req, res) => {
 
   res.status(201).json(data[0]);
 });
+app.post("/userprofile", async (req, res) => {
+  const { name, quote } = req.body;
 
+  if (!name || !quote) {
+    return res.status(400).json({ error: "Name and quote are required" });
+  }
+
+  const { data, error } = await supabase
+    .from("user_profile")
+    .insert([{ name, quote }])
+    .select();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.status(201).json(data[0]);
+});
 // GET ALL QUOTES (no pagination, no limit)
 app.get("/posts", async (req, res) => {
   const { data, error } = await supabase.from("post_flow").select("*");
