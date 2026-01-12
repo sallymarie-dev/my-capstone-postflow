@@ -33,7 +33,7 @@ export default function UserProfile() {
         </div>
       ))}
 
-      <button onClick={() => navigate("/feed")}>Back to Feed</button>
+      <button className="btn" onClick={() => navigate("/feed")}>Back to Feed</button>
     </>
   );
 }
