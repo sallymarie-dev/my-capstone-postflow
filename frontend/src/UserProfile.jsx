@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function UserProfile({ name, quote }) {
+export default function UserProfile() {
   const [profile, setProfile] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  fetch("http://localhost:3000/user_profile")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      setProfile(data);
-    })
-    .catch((error) => console.error("Error", error));
+  useEffect(() => {
+    fetch("http://localhost:3000/user_profile")
+      .then((res) => res.json())
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching user profile:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading user quotes...</p>;
+  if (profile.length === 0) return <p>No quotes yet.</p>;
 
   return (
     <>
@@ -23,10 +32,8 @@ export default function UserProfile({ name, quote }) {
           </div>
         </div>
       ))}
-      <button className="nav-btn" onClick={() => navigate("/feed")}>
-        Back to Feed
-      </button>
-      ;
+
+      <button onClick={() => navigate("/feed")}>Back to Feed</button>
     </>
   );
 }
