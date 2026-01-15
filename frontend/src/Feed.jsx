@@ -12,6 +12,10 @@ export default function Feed({ user, onLogout }) {
   const [name, setName] = useState(user?.name || "");
   const [quote, setQuote] = useState("");
 
+  // search state
+  const [search, setSearch] = useState("");
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
   // Pagination
   const itemList = 10;
   const [startIndex, setStartIndex] = useState(0);
@@ -20,6 +24,22 @@ export default function Feed({ user, onLogout }) {
     fetchPosts();
   }, []);
 
+  // filter posts as user types
+  useEffect(() => {
+    if (search.trim() === "") {
+      setFilteredPosts(posts);
+    } else {
+      const lower = search.toLowerCase();
+      const matches = posts.filter(
+        (p) =>
+          p.quote.toLowerCase().includes(lower) ||
+          p.author.toLowerCase().includes(lower)
+      );
+      setFilteredPosts(matches);
+      setStartIndex(0);
+    }
+  }, [search, posts]);
+
   // Fetch posts from post_flow table
   const fetchPosts = async () => {
     try {
@@ -27,13 +47,17 @@ export default function Feed({ user, onLogout }) {
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
       setPosts(data);
+
+      // initialize filteredPosts
+      setFilteredPosts(data);
+
       setStartIndex(0);
     } catch (err) {
       console.error("Fetch posts error:", err);
     }
   };
 
-  // Optional: create new user_profile quote
+  // create new user_profile quote
   const submitQuote = async (e) => {
     e.preventDefault();
     if (!name.trim() || !quote.trim()) return;
@@ -46,10 +70,11 @@ export default function Feed({ user, onLogout }) {
       });
 
       if (!res.ok) throw new Error("Failed to post quote");
-      const inserted = await res.json();
+      await res.json();
       alert("Quote created!");
       setQuote("");
       setShowCreate(false);
+      fetchPosts();
     } catch (err) {
       console.error("Submit quote error:", err);
     }
@@ -80,11 +105,14 @@ export default function Feed({ user, onLogout }) {
     }
   };
 
-  // Pagination slice
-  const visiblePosts = posts.slice(startIndex, startIndex + itemList);
+  //  filteredPosts instead of posts
+  const visiblePosts = filteredPosts.slice(
+    startIndex,
+    startIndex + itemList
+  );
 
   const handleNext = () => {
-    if (startIndex + itemList >= posts.length) {
+    if (startIndex + itemList >= filteredPosts.length) {
       setStartIndex(0);
     } else {
       setStartIndex(startIndex + itemList);
@@ -102,6 +130,16 @@ export default function Feed({ user, onLogout }) {
         <button className="nav-btn" onClick={fetchPosts}>Explore Quotes</button>
         <button className="nav-btn" onClick={() => setShowCreate(true)}>Create</button>
         <button className="nav-btn" onClick={() => navigate("/profile")}>Profile</button>
+      </div>
+
+      {/* search bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search quotes or authors..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <button className="btn logout-btn" onClick={onLogout}>Logout</button>
@@ -141,8 +179,7 @@ export default function Feed({ user, onLogout }) {
               <span className="profile-name">{p.author}</span>
             </div>
             &nbsp;
-            <div
-              className="quote-actions">
+            <div className="quote-actions">
               <button className="btn" onClick={() => handleSave(p.id)}>❤ Love This!</button>
             </div>
           </div>
@@ -150,11 +187,12 @@ export default function Feed({ user, onLogout }) {
       </div>
 
       {/* Pagination */}
-      {posts.length > 0 && (
+      {filteredPosts.length > 0 && (
         <div className="pagination">
           <button className="nav-btn" onClick={handleNext}>Next</button>
           <p className="page-count">
-            Showing {startIndex + 1}–{Math.min(startIndex + itemList, posts.length)} of {posts.length}
+            Showing {startIndex + 1}–
+            {Math.min(startIndex + itemList, filteredPosts.length)} of {filteredPosts.length}
           </p>
         </div>
       )}
