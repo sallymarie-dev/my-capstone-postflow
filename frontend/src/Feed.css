@@ -74,7 +74,7 @@
   margin-top: 32px;
 }
 
-/* Responsive */
+
 @media (max-width: 1024px) {
   .user-profiles-grid {
     column-count: 2;
@@ -114,7 +114,7 @@
 .user-profile-card:nth-child(4n) {
   background: linear-gradient(135deg, #0ba7f0, #ffffff);
 }
-/* ================= MODAL OVERLAY ================= */
+/*  MODAL OVERLAY */
 
 .modal-overlay {
   position: fixed;
