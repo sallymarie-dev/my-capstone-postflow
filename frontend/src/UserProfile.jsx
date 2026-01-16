@@ -24,6 +24,9 @@ export default function UserProfile() {
 
   return (
     <>
+    <h1>Welcome to your profile </h1>
+    <h4>Here you will find all of your favorite quotes</h4>
+    
       {profile.map((p, index) => (
         <div key={index} className="user-profile-card">
           <p className="quote-text">“{p.quote}”</p>
