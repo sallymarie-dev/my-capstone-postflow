@@ -7,42 +7,44 @@ export default function Login({ onLogin }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [quotes, setQuotes] = useState([]);
-  const [currentQuote, setCurrentQuote] = useState(null);
+  // const [quotes, setQuotes] = useState([]);
+  // const [currentQuote, setCurrentQuote] = useState(null);
 
   const navigate = useNavigate();
 
   // Fetch quotes from backend on mount
-  useEffect(() => {
-    const fetchQuotes = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/posts");
-        if (!response.ok) throw new Error("Failed to fetch quotes");
-        const data = await response.json();
-        setQuotes(data);
+  // useEffect(() => {
+  //   const fetchQuotes = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:3000/posts");
+  //       if (!response.ok) throw new Error("Failed to fetch quotes");
+  //       const data = await response.json();
+  //       setQuotes(data);
 
-        if (data.length > 0) {
-          setCurrentQuote(data[Math.floor(Math.random() * data.length)]);
-        }
-      } catch (err) {
-        console.error("Error fetching quotes:", err);
-      }
-    };
+  //       if (data.length > 0) {
+  //         setCurrentQuote(data[Math.floor(Math.random() * data.length)]);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching quotes:", err);
+  //     }
+  //   };
 
-    fetchQuotes();
-  }, []);
+  //   fetchQuotes();
+  // }, []);
 
   // Rotate quotes every 5 seconds
-  useEffect(() => {
-    if (quotes.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [quotes]);
+  // useEffect(() => {
+  //   if (quotes.length === 0) return;
+  //   const interval = setInterval(() => {
+  //     setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, [quotes]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name.trim()) return;
 
     console.log(email, password);
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -55,11 +57,25 @@ export default function Login({ onLogin }) {
       return;
     }
 
-    if (!name.trim()) return;
-
-    onLogin({ name }); // set user in App state
-    onLogin(data.user);
+    // set user in App state
+    onLogin({ ...data.user, name });
     navigate("/Feed"); // redirect to Feed
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    onLogin(data.user);
+    navigate("/Feed");
   };
 
   return (
@@ -71,16 +87,16 @@ export default function Login({ onLogin }) {
       <p className="tagline">Share Life’s Moments</p>
 
       {/* Rotating quote */}
-      {currentQuote && (
+      {/* {currentQuote && (
         <div className="login-quote">
           <p>"{currentQuote.quote}"</p>
           <span>- {currentQuote.author}</span>
         </div>
-      )}
+      )} */}
       <h1>Sign In Below: </h1>
 
       <form onSubmit={handleSubmit} className="container">
-        <label htmlFor="name">
+        <label for="name">
           <h3>Name:</h3>
         </label>
         <input
@@ -90,7 +106,7 @@ export default function Login({ onLogin }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <label htmlFor="email">
+        <label for="email">
           <h3>Email/Phone:</h3>{" "}
         </label>
         <input
@@ -98,9 +114,11 @@ export default function Login({ onLogin }) {
           type="text"
           name="email"
           id="email"
+          value={email}
           placeholder="Email / Phone Here"
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <label htmlFor="password">
+        <label for="password">
           <h3>Password:</h3>{" "}
         </label>
         <input
@@ -108,10 +126,38 @@ export default function Login({ onLogin }) {
           type="password"
           name="password"
           id="password"
+          value={password}
           placeholder="Enter Password"
+          onChange={(e) => setPassword(e.target.value)}
         />
         <br />
         <button className="btn">Login</button>
+      </form>
+
+      <h3>Don't have an account? Sign Up Here!</h3>
+
+      <form onSubmit={handleSignUp} className="container">
+        <input
+          className="name-box"
+          type="email"
+          name="email"
+          id="email2"
+          placeholder="Your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          className="name-box"
+          type="password"
+          name="password"
+          id="password2"
+          placeholder="Your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br />
+        <button className="btn">Sign Up</button>
       </form>
     </div>
   );

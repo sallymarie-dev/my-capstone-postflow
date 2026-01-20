@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Feed.css";
 import postFlowImg from "./assets/PostFlow.png";
+import supabase from "./supabase";
 
 export default function Feed({ user, onLogout }) {
   const navigate = useNavigate();
@@ -43,14 +44,15 @@ export default function Feed({ user, onLogout }) {
   // Fetch posts from post_flow table
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/posts");
-      if (!res.ok) throw new Error("Failed to fetch posts");
-      const data = await res.json();
+      const { data, error } = await supabase
+        .from("post_flow")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
       setPosts(data);
-
-      // initialize filteredPosts
       setFilteredPosts(data);
-
       setStartIndex(0);
     } catch (err) {
       console.error("Fetch posts error:", err);
@@ -81,35 +83,37 @@ export default function Feed({ user, onLogout }) {
   };
 
   // Save post to user's favorites
-  const handleSave = async (postId) => {
+  const handleSave = async (post) => {
     try {
-      const res = await fetch("http://localhost:3000/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_name: user?.name, post_id: postId, quote: quote }),
-      });
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-      if (res.status === 409) {
-        alert("You already saved this quote!");
+      if (userError || !user) {
+        alert("You must be logged in");
         return;
       }
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Failed to save quote");
-      }
+      const { error } = await supabase.from("user_profile").insert([
+        {
+          user_id: user.id,
+          quote: post.quote,
+          name: user.user_metadata?.full_name || user.email,
+        },
+      ]);
 
-      alert("Quote saved to your favorites!");
+      if (error) throw error;
+
+      alert("Quote saved to your profile!");
     } catch (err) {
       console.error("Save quote error:", err);
+      alert(err.message);
     }
   };
 
   //  filteredPosts instead of posts
-  const visiblePosts = filteredPosts.slice(
-    startIndex,
-    startIndex + itemList
-  );
+  const visiblePosts = filteredPosts.slice(startIndex, startIndex + itemList);
 
   const handleNext = () => {
     if (startIndex + itemList >= filteredPosts.length) {
@@ -123,13 +127,21 @@ export default function Feed({ user, onLogout }) {
     <div className="feed-page">
       {/* Logo */}
       <img src={postFlowImg} alt="PostFlow Logo" className="feed-logo" />
-      <p className="feed-tagline">Welcome, {user?.name.toUpperCase() || "Guest"}</p>
+      <p className="feed-tagline">
+        Welcome, {user?.name.toUpperCase() || "Guest"}
+      </p>
 
       {/* Nav */}
       <div className="nav-bar">
-        <button className="nav-btn" onClick={fetchPosts}>Explore Quotes</button>
-        <button className="nav-btn" onClick={() => setShowCreate(true)}>Create</button>
-        <button className="nav-btn" onClick={() => navigate("/profile")}>Profile</button>
+        <button className="nav-btn" onClick={fetchPosts}>
+          Explore Quotes
+        </button>
+        <button className="nav-btn" onClick={() => setShowCreate(true)}>
+          Create
+        </button>
+        <button className="nav-btn" onClick={() => navigate("/profile")}>
+          Profile
+        </button>
       </div>
 
       {/* search bar */}
@@ -142,28 +154,34 @@ export default function Feed({ user, onLogout }) {
         />
       </div>
 
-      <button className="btn logout-btn" onClick={onLogout}>Logout</button>
+      <button className="btn logout-btn" onClick={onLogout}>
+        Logout
+      </button>
 
       {/*Create Modal*/}
       {showCreate && (
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <h2>Create a Quote</h2>
             <form onSubmit={submitQuote}>
               <input
                 type="text"
                 placeholder="Your name"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
               <textarea
                 placeholder="Write your quote..."
                 value={quote}
-                onChange={e => setQuote(e.target.value)}
+                onChange={(e) => setQuote(e.target.value)}
               />
               <div className="modal-actions">
-                <button type="button" onClick={() => setShowCreate(false)}>Cancel</button>
-                <button type="submit" className="primary">Post</button>
+                <button type="button" onClick={() => setShowCreate(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="primary">
+                  Post
+                </button>
               </div>
             </form>
           </div>
@@ -180,7 +198,9 @@ export default function Feed({ user, onLogout }) {
             </div>
             &nbsp;
             <div className="quote-actions">
-              <button className="btn" onClick={() => handleSave(p.id)}>❤ Love This!</button>
+              <button className="btn" onClick={() => handleSave(p)}>
+                ❤ Love This!
+              </button>
             </div>
           </div>
         ))}
@@ -189,10 +209,13 @@ export default function Feed({ user, onLogout }) {
       {/* Pagination */}
       {filteredPosts.length > 0 && (
         <div className="pagination">
-          <button className="nav-btn" onClick={handleNext}>Next</button>
+          <button className="nav-btn" onClick={handleNext}>
+            Next
+          </button>
           <p className="page-count">
             Showing {startIndex + 1}–
-            {Math.min(startIndex + itemList, filteredPosts.length)} of {filteredPosts.length}
+            {Math.min(startIndex + itemList, filteredPosts.length)} of{" "}
+            {filteredPosts.length}
           </p>
         </div>
       )}
