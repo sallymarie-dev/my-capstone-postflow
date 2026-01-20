@@ -1,65 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import postFlowImg from "./assets/PostFlow.png";
 import supabase from "./supabase.js";
+import LogoHeader from "./components/LogoHeader";
+import AuthForm from "./components/AuthForm";
+import "./Login.css";
 
 export default function Login({ onLogin }) {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [quotes, setQuotes] = useState([]);
-  // const [currentQuote, setCurrentQuote] = useState(null);
 
-  const navigate = useNavigate();
-
-  // Fetch quotes from backend on mount
-  // useEffect(() => {
-  //   const fetchQuotes = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:3000/posts");
-  //       if (!response.ok) throw new Error("Failed to fetch quotes");
-  //       const data = await response.json();
-  //       setQuotes(data);
-
-  //       if (data.length > 0) {
-  //         setCurrentQuote(data[Math.floor(Math.random() * data.length)]);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error fetching quotes:", err);
-  //     }
-  //   };
-
-  //   fetchQuotes();
-  // }, []);
-
-  // Rotate quotes every 5 seconds
-  // useEffect(() => {
-  //   if (quotes.length === 0) return;
-  //   const interval = setInterval(() => {
-  //     setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, [quotes]);
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!name.trim()) return;
+    if (!email || !password) return;
 
-    console.log(email, password);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+    if (error) return alert(error.message);
 
-    // set user in App state
-    onLogin({ ...data.user, name });
-    navigate("/Feed"); // redirect to Feed
+    onLogin({
+      ...data.user,
+      name: name || data.user.email,
+    });
+
+    navigate("/Feed");
   };
 
   const handleSignUp = async (e) => {
@@ -70,95 +40,62 @@ export default function Login({ onLogin }) {
       password,
     });
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+    if (error) return alert(error.message);
+
     onLogin(data.user);
     navigate("/Feed");
   };
 
   return (
     <div className="login-page">
-      <div className="logo-wrapper">
-        <img src={postFlowImg} alt="PostFlow Logo" className="logo-img" />
-      </div>
+      <LogoHeader />
 
-      <p className="tagline">Share Life’s Moments</p>
-
-      {/* Rotating quote */}
-      {/* {currentQuote && (
-        <div className="login-quote">
-          <p>"{currentQuote.quote}"</p>
-          <span>- {currentQuote.author}</span>
-        </div>
-      )} */}
-      <h1>Sign In Below: </h1>
-
-      <form onSubmit={handleSubmit} className="container">
-        <label for="name">
-          <h3>Name:</h3>
-        </label>
-        <input
-          className="name-box"
-          type="text"
-          placeholder="Enter your name"
+      <AuthForm
+        title="Sign In Below"
+        buttonText="Login"
+        onSubmit={handleLogin}
+      >
+        <InputField
+          label="Name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={setName}
+          placeholder="Enter your name"
         />
-        <label for="email">
-          <h3>Email/Phone:</h3>{" "}
-        </label>
-        <input
-          className="name-box"
-          type="text"
-          name="email"
-          id="email"
+        <InputField
+          label="Email"
           value={email}
-          placeholder="Email / Phone Here"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={setEmail}
+          placeholder="Email address"
         />
-        <label for="password">
-          <h3>Password:</h3>{" "}
-        </label>
-        <input
-          className="name-box"
+        <InputField
+          label="Password"
           type="password"
-          name="password"
-          id="password"
           value={password}
-          placeholder="Enter Password"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
+          placeholder="Password"
         />
-        <br />
-        <button className="btn">Login</button>
-      </form>
+      </AuthForm>
 
       <h3>Don't have an account? Sign Up Here!</h3>
 
-      <form onSubmit={handleSignUp} className="container">
-        <input
-          className="name-box"
-          type="email"
-          name="email"
-          id="email2"
-          placeholder="Your email"
+      <AuthForm
+        buttonText="Sign Up"
+        onSubmit={handleSignUp}
+      >
+        <InputField
+          label="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={setEmail}
+          placeholder="Your email"
         />
-
-        <input
-          className="name-box"
+        <InputField
+          label="Password"
           type="password"
-          name="password"
-          id="password2"
-          placeholder="Your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
+          placeholder="Your password"
         />
-        <br />
-        <button className="btn">Sign Up</button>
-      </form>
+      </AuthForm>
     </div>
   );
 }
