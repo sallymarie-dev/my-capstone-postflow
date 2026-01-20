@@ -48,6 +48,7 @@ import supabase from "./supabase";
 
 export default function UserProfile() {
   const [quotes, setQuotes] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -68,8 +69,8 @@ export default function UserProfile() {
     }
 
     const { data, error } = await supabase
-      .from("quotes")
-      .select("id, content, created_at")
+      .from("user_profile")
+      .select("id, name, quote, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -92,7 +93,7 @@ export default function UserProfile() {
 
       {quotes.map((q) => (
         <div key={q.id} className="user-profile-card">
-          <p className="quote-text">“{q.content}”</p>
+          <p className="quote-text">“{q.quote}”</p>
           <small>{new Date(q.created_at).toLocaleString()}</small>
         </div>
       ))}
