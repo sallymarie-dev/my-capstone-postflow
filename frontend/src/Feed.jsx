@@ -67,28 +67,54 @@ export default function Feed({ user, onLogout }) {
 
   // --- Save a quote to user profile ---
   const handleSave = async (post) => {
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        alert("You must be logged in");
-        return;
-      }
+  if (!post) return;
 
-      const { error } = await supabase.from("user_profile").insert([
-        {
-          user_id: user.id,
-          quote: post.quote,
-          name: user.user_metadata?.full_name || user.email,
-        },
-      ]);
-
-      if (error) throw error;
-      alert("Quote saved to your profile!");
-    } catch (err) {
-      console.error("Save quote error:", err);
-      alert(err.message);
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      alert("You must be logged in");
+      return;
     }
-  };
+
+    const { error } = await supabase.from("user_profile").insert([
+      {
+        user_id: user.id,
+        name: post.author || user.user_metadata?.full_name || user.email,
+        quote: post.quote,
+      },
+    ]);
+
+    if (error) throw error;
+    alert("Quote saved to your profile!");
+  } catch (err) {
+    console.error("Save quote error:", err);
+    alert(err.message);
+  }
+};
+
+  // const handleSave = async (post) => {
+  //   try {
+  //     const { data: { user }, error: userError } = await supabase.auth.getUser();
+  //     if (userError || !user) {
+  //       alert("You must be logged in");
+  //       return;
+  //     }
+
+  //     const { error } = await supabase.from("user_profile").insert([
+  //       {
+  //         user_id: user.id,
+  //         quote: post.quote,
+  //         name: user.user_metadata?.full_name || user.email,
+  //       },
+  //     ]);
+
+  //     if (error) throw error;
+  //     alert("Quote saved to your profile!");
+  //   } catch (err) {
+  //     console.error("Save quote error:", err);
+  //     alert(err.message);
+  //   }
+  // };
 
   return (
     <div className="feed-page">

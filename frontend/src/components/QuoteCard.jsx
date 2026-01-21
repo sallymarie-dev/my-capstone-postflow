@@ -1,4 +1,5 @@
 export default function QuoteCard({ post, onSave }) {
+   if (!post) return null;
   return (
     <div className="user-profile-card">
       <p className="quote-text">“{post.quote}”</p>
