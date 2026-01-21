@@ -1,15 +1,18 @@
-export default function QuoteCard({ post, onSave }) {
+export default function QuoteCard({ quote, author, date, onSave }) {
   return (
     <div className="user-profile-card">
-      <p className="quote-text">“{post.quote}”</p>
+      <p className="quote-text">“{quote}”</p>
       <div className="profile-footer">
-        <span className="profile-name">{post.author}</span>
+        <span className="profile-name">{author}</span>
       </div>
-      <div className="quote-actions">
-        <button className="btn" onClick={() => onSave(post)}>
-          ❤ Love This!
-        </button>
-      </div>
+      {date && <small>{new Date(date).toLocaleString()}</small>}
+      {onSave && (
+        <div className="quote-actions">
+          <button className="btn" onClick={onSave}>
+            ❤ Love This!
+          </button>
+        </div>
+      )}
     </div>
   );
 }

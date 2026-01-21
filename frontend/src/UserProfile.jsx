@@ -1,54 +1,11 @@
-// import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import supabase from "./supabase";
-
-// export default function UserProfile() {
-//   const [profile, setProfile] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     fetch("http://localhost:3000/user_profile")
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setProfile(data);
-//         setLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error("Error fetching user profile:", err);
-//         setLoading(false);
-//       });
-//   }, []);
-
-//   if (loading) return <p>Loading user quotes...</p>;
-//   if (profile.length === 0) return <p>No quotes yet.</p>;
-
-//   return (
-//     <>
-//     <h1>Welcome to your profile </h1>
-//     <h4>Here you will find all of your favorite quotes</h4>
-
-//       {profile.map((p, index) => (
-//         <div key={index} className="user-profile-card">
-//           <p className="quote-text">“{p.quote}”</p>
-//           <div className="profile-footer">
-//             <span className="profile-name">{p.name}</span>
-//           </div>
-//         </div>
-//       ))}
-
-//       <button className="btn" onClick={() => navigate("/feed")}>Back to Feed</button>
-//     </>
-//   );
-// }
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "./supabase";
+import QuoteCard from "./components/QuoteCard";
+import ProfileHeader from "./components/ProfileHeader";
 
 export default function UserProfile() {
   const [quotes, setQuotes] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -64,7 +21,7 @@ export default function UserProfile() {
 
     if (userError || !user) {
       console.error("No authenticated user");
-      navigate("/");
+      navigate("/login");
       return;
     }
 
@@ -88,15 +45,21 @@ export default function UserProfile() {
 
   return (
     <>
-      <h1>Welcome to your profile</h1>
-      <h4>Here you will find all of your favorite quotes</h4>
+      <ProfileHeader
+        title="Welcome to your profile"
+        subtitle="Here you will find all of your favorite quotes"
+      />
 
-      {quotes.map((q) => (
-        <div key={q.id} className="user-profile-card">
-          <p className="quote-text">“{q.quote}”</p>
-          <small>{new Date(q.created_at).toLocaleString()}</small>
-        </div>
-      ))}
+      <div className="quotes-grid">
+        {quotes.map((q) => (
+          <QuoteCard
+            key={q.id}
+            quote={q.quote}
+            date={q.created_at}
+            name={q.name}
+          />
+        ))}
+      </div>
 
       <button className="btn" onClick={() => navigate("/feed")}>
         Back to Feed
