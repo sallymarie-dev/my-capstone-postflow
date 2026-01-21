@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import supabase from "./supabase";
 
 export default function UserProfile() {
-  const [favorites, setFavorites] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUserFavorites();
+    fetchUserQuotes();
   }, []);
 
-  const fetchUserFavorites = async () => {
+  // Fetch all quotes saved by the logged-in user
+  const fetchUserQuotes = async () => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
@@ -20,49 +21,44 @@ export default function UserProfile() {
         return;
       }
 
-      // Fetch favorites joined with post_flow
+      // Fetch from user_profile where user_id matches
       const { data, error } = await supabase
-        .from("user_favorites")
-        .select(`
-          id,
-          created_at,
-          post_flow (
-            id,
-            quote,
-            author,
-            created_at
-          )
-        `)
+        .from("user_profile")
+        .select("id, quote, name, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching favorites:", error);
+        console.error("Error fetching user quotes:", error);
       } else {
-        setFavorites(data);
+        setQuotes(data);
       }
     } catch (err) {
-      console.error("Error fetching user favorites:", err);
+      console.error("Error fetching user quotes:", err);
     }
+
     setLoading(false);
   };
 
-  // if (loading) return <p>Loading your favorite quotes...</p>;
-  // if (!favorites.length) return <p>You haven't loved any quotes yet.</p>;
+  if (loading) return <p>Loading your quotes...</p>;
+  if (!quotes.length) return <p>You haven't saved any quotes yet.</p>;
 
   return (
     <>
       <h1>Welcome to your profile</h1>
-      <h4>Here are your loved quotes</h4>
+      <h4>Here are all your loved quotes</h4>
 
-      {favorites.map((fav) => (
-        <div key={fav.id} className="user-profile-card">
-          <p className="quote-text">“{fav.post_flow.quote}”</p>
-          <small>— {fav.post_flow.author}</small>
-          <br />
-          <small>{new Date(fav.post_flow.created_at).toLocaleString()}</small>
-        </div>
-      ))}
+      <div className="user-profiles-grid">
+        {quotes.map((q) => (
+          <div key={q.id} className="user-profile-card">
+            <p className="quote-text">“{q.quote}”</p>
+            <div className="profile-footer">
+              <span className="profile-name">{q.name}</span>
+            </div>
+            <small>{new Date(q.created_at).toLocaleString()}</small>
+          </div>
+        ))}
+      </div>
 
       <button className="btn" onClick={() => navigate("/feed")}>
         Back to Feed
