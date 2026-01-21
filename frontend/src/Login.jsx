@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import supabase from "./supabase.js";
 import LogoHeader from "./components/LogoHeader";
 import AuthForm from "./components/AuthForm";
-import "./Login.css";
+import "./index.css";
+import InputField from "./components/InputField";
 
 export default function Login({ onLogin }) {
   const navigate = useNavigate();
