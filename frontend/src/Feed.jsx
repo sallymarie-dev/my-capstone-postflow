@@ -17,7 +17,7 @@ export default function Feed({ user, onLogout }) {
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
 
-  const itemList = 10; // quotes per page
+  const itemList = 10; // number of quotes per page
   const [startIndex, setStartIndex] = useState(0);
 
   // Fetch posts on mount
@@ -25,24 +25,23 @@ export default function Feed({ user, onLogout }) {
     fetchPosts();
   }, []);
 
-  // Update filtered posts when search changes
+  // Search functionality: filters posts by quote text or author
   useEffect(() => {
     if (!search.trim()) {
       setFilteredPosts(posts);
     } else {
       const lower = search.toLowerCase();
-      setFilteredPosts(
-        posts.filter(
-          (p) =>
-            p.quote.toLowerCase().includes(lower) ||
-            p.author.toLowerCase().includes(lower)
-        )
+      const matches = posts.filter(
+        (p) =>
+          p.quote.toLowerCase().includes(lower) ||
+          p.author.toLowerCase().includes(lower)
       );
+      setFilteredPosts(matches);
     }
-    setStartIndex(0); // reset to first page on search
+    setStartIndex(0); // Reset pagination on new search
   }, [search, posts]);
 
-  // Fetch posts from post_flow table
+  // Fetch posts from Supabase
   const fetchPosts = async () => {
     const { data, error } = await supabase
       .from("post_flow")
@@ -55,38 +54,23 @@ export default function Feed({ user, onLogout }) {
     }
   };
 
-  // Save a quote to user_profile when "Love This" is clicked
+  // Save quote to user_profile
   const handleSave = async (post) => {
-    if (!user) return alert("You must be logged in");
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
 
-    try {
-      // Check if quote already saved to avoid duplicates
-      const { data: existing, error: checkError } = await supabase
-        .from("user_profile")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("quote", post.quote)
-        .single();
+    if (!authUser) return alert("You must be logged in");
 
-      if (!checkError && existing) {
-        return alert("You already loved this quote!");
-      }
+    await supabase.from("user_profile").insert([
+      {
+        user_id: authUser.id,
+        quote: post.quote,
+        name: authUser.user_metadata?.full_name || authUser.email,
+      },
+    ]);
 
-      const { error } = await supabase.from("user_profile").insert([
-        {
-          user_id: user.id,
-          quote: post.quote,
-          name: post.author || user.user_metadata?.full_name || user.email,
-        },
-      ]);
-
-      if (error) throw error;
-
-      alert("Quote saved to your profile!");
-    } catch (err) {
-      console.error("Save quote error:", err);
-      alert("Failed to save quote: " + err.message);
-    }
+    alert("Quote saved!");
   };
 
   // Pagination logic
@@ -118,12 +102,14 @@ export default function Feed({ user, onLogout }) {
         onProfile={() => navigate("/profile")}
       />
 
+      {/* Search bar */}
       <SearchBar value={search} onChange={setSearch} />
 
       <button className="btn logout-btn" onClick={onLogout}>
         Logout
       </button>
 
+      {/* Quotes Grid */}
       <QuoteGrid posts={visiblePostsSlice} onSave={handleSave} />
 
       {/* Pagination buttons */}
@@ -136,6 +122,7 @@ export default function Feed({ user, onLogout }) {
         </button>
       </div>
 
+      {/* Create Quote Modal */}
       {showCreate && (
         <CreateQuoteModal
           user={user}
