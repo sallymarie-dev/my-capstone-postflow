@@ -92,6 +92,7 @@ export default function Feed({ user, onLogout }) {
     );
   };
 
+  
   return (
     <div className="feed-page">
       <FeedHeader user={user} />
