@@ -1,57 +1,71 @@
 import "dotenv/config";
 import express from "express";
+
 const app = express();
 const PORT = 3001;
+
+const myAPIKey = process.env.myAPIKey;
+const SERVICE_KEY = process.env.SERVICE_KEY;
+
+// Simple cache
+const weatherCache = {};
 
 app.get("/", (req, res) => {
   res.json({ message: "weather microservice is running!!" });
 });
-const myAPIKey = process.env.myAPIKey;
+
 app.get("/weather", async (req, res) => {
-  const clientKey = req.headers["x-api-key"];
-  const validKey = process.env.SERVICE_KEY;
-  console.log(`Received key: ${clientKey ? "present" : "missing"}`);
-  if (!clientKey || clientKey !== validKey) {
-    return res.status(401).json({ error: "Not authorized" });
-  }
+  try {
+    //  API key check FIRST
+    const clientKey = req.headers["x-api-key"];
+    if (!clientKey || clientKey !== SERVICE_KEY) {
+      return res.status(401).json({ error: "Not authorized" });
+    }
 
-  const { zip, date } = req.query;
-  if (!zip) return res.status(400).json({ error: "zip is required" });
-  if (!date) return res.status(400).json({ error: "date is required" });
-  console.log(`Fetching weather for ${zip}, ${date}`);
-  const result = await fetch(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${zip}/${date}?key=${myAPIKey}&contentType=json`
-  );
+    //  Query params
+    const { zip, date } = req.query;
 
-  const data = await result.json();
-  console.log(data);
+    if (!zip) return res.status(400).json({ error: "zip is required" });
+    if (!date) return res.status(400).json({ error: "date is required" });
 
-  const days = data.days.reduce((resultDays, day) => {
-    resultDays.push({
+    //  Cache key
+    const cacheKey = `${zip}-${date}`;
+
+    //  Cache check
+    if (weatherCache[cacheKey]) {
+      console.log("Cache hit:", cacheKey);
+      return res.json(weatherCache[cacheKey]);
+    }
+
+    console.log("Cache miss:", cacheKey);
+
+    // Fetch from Visual Crossing
+    const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${zip}/${date}?key=${myAPIKey}&contentType=json`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      return res.status(500).json({ error: "Weather API failed" });
+    }
+
+    const data = await response.json();
+
+    const days = data.days.map((day) => ({
       datetime: day.datetime,
       temp: day.temp,
-    });
-    return resultDays;
-  }, []);
+    }));
 
-  // const dayData = data.days[0];
-  // const weatherDTO = {
-  //   date: dayData.datetime,
-  //   tempHigh: dayData.tempmax,
-  //   tempLow: dayData.tempmin,
-  //   conditions: dayData.conditions,
-  // };
+    //  Store in cache
+    weatherCache[cacheKey] = days;
 
-  const weather = {
-    tempHigh: 41,
-    tempLow: 28,
-    conditions: "windy, icy",
-    summary: "Cold chill advisory",
-  };
-  res.json(days);
+    res.json(days);
+  } catch (err) {
+    console.error("Weather service error:", err);
+    res.status(500).json({ error: " server error" });
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`Weather Microservice running on port ${PORT}`);
 });
+
 export default app;
