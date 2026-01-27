@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Added useEffect import
+import React, { useState, useEffect } from "react"; 
 
 export default function WeatherSearch() {
   const [zip, setZip] = useState("10001");
@@ -6,9 +6,9 @@ export default function WeatherSearch() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Auto-fetch on mount
+ 
   useEffect(() => {
-    fetchWeather(); // Fixed: called the correct function name
+    fetchWeather(); 
   }, []);
 
   const fetchWeather = async (e) => {
@@ -21,7 +21,7 @@ export default function WeatherSearch() {
       const data = await response.json();
 
       if (response.ok) {
-        // Since your microservice returns an array of days
+      
         setWeather(data[0]);
       } else {
         console.error(data.error || "Weather search failed");

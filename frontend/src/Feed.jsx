@@ -41,8 +41,6 @@ export default function Feed({ user, onLogout }) {
     }
     setStartIndex(0); // Reset pagination on new search
   }, [search, posts]);
-
-
   // Fetch posts from Supabase
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -55,9 +53,6 @@ export default function Feed({ user, onLogout }) {
       setFilteredPosts(data);
     }
   };
-
-
-
   // Save quote to user_profile
   const handleSave = async (post) => {
     const {

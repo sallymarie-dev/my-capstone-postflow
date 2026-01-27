@@ -1,36 +1,3 @@
-// import { useState } from "react";
-
-// export default function PostForm({ user }) {
-//   const [quote, setQuote] = useState("");
-
-//   async function handleSubmit(event) {
-//     event.preventDefault();
-
-//     await fetch("http://localhost:5173/posts", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         author: user,
-//         quote,
-//       }),
-//     });
-
-//     setQuote("");
-//   }
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <input
-//         placeholder="Write a quote..."
-//         value={quote}
-//         onChange={(event) => setQuote(event.target.value)}
-//       />
-//       <button>Post</button>
-//     </form>
-//   );
-// }
-
-
 import { useState } from "react";
 
 export default function PostForm({ user }) {
