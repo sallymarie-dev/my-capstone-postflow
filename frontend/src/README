@@ -1,162 +1,152 @@
+PostFlow
+PostFlow is a social media quote-sharing application that allows users to explore, create, and save inspirational quotes. This version features a Microservices Architecture, integrating a dedicated weather service to provide real-time environmental context to the global feed. Users can browse quotes, post their own, and save favorites to their personal profile — similar to the way TikTok users can like and save videos.
 
-# PostFlow
+Features
+Explore Quotes: Browse quotes from all users in the feed, newest first.
+Weather Integration: Real-time weather data displayed on the feed via a protected Microservice.
+Weather Search: Users can search for specific weather conditions by Zip Code and Date.
+Create Quotes: Users can post their own quotes directly from the feed.
+Save Favorites: Users can save quotes from the feed to their profile for later.
+User Profiles: Each user has a personal profile page displaying their saved quotes with a glassmorphism design.
+Pagination: Display quotes in pages of 10 with a "Next" button for smooth browsing.
+Microservice Caching: The weather service includes an in-memory cache to optimize performance and reduce API calls.
 
-**PostFlow** is a social media quote-sharing application that allows users to explore, create, and save inspirational quotes. Users can browse quotes from the global feed, post their own quotes, and save their favorite quotes to their personal profile — similar to the way TikTok users can like and save videos.
+Tech Stack
+Frontend: React, React Router, CSS (Glassmorphism & Nature Aesthetics)
+Main Backend: Node.js, Express (Handles Supabase & Service Proxy)
+Weather Microservice: Node.js, Express (Handles Visual Crossing API & Caching)
+Database: Supabase (PostgreSQL)
+APIs: REST endpoints for quotes, favorites, and weather data.
 
----
+System Architecture
+PostFlow uses a Proxy Pattern for its microservices. The Frontend communicates only with the Main Backend, which then performs a "handshake" with the Weather Microservice using a shared SERVICE_KEY.
 
-## Features
+Table Structure
+post_flow
+Column
+Type
+Description
+id
+int
+Auto-increment primary key
+author
+text
+Name of the user posting
+quote
+text
+The quote content
+created_at
+timestamp
+Auto-generated creation date
 
-* **Explore Quotes:** Browse quotes from all users in the feed, newest first.
-* **Create Quotes:** Users can post their own quotes directly from the feed.
-* **Save Favorites:** Users can save quotes from the feed to their profile for later.
-* **User Profiles:** Each user has a personal profile page displaying their saved quotes.
-* **Pagination:** Display quotes in pages of 10 with a "Next" button for smooth browsing.
-* **Backend CRUD Operations:** Full support for Create, Read, Update, and Delete operations for posts and favorites.
+user_profile
+Column
+Type
+Description
+id
+int
+Auto-increment primary key
+name
+text
+User's name
+quote
+text
+User-created quote
+created_at
+timestamp
+Auto-generated creation date
 
----
 
-## Tech Stack
-
-* **Frontend:** React, React Router, CSS
-* **Backend:** Node.js, Express
-* **Database:** Supabase (PostgreSQL)
-* **APIs:** REST endpoints for quotes and favorites
-
----
-
-## Table Structure
-
-### `post_flow`
-
-| Column     | Type      | Description                  |
-| ---------- | --------- | ---------------------------- |
-| id         | int       | Auto-increment primary key   |
-| author     | text      | Name of the user posting     |
-| quote      | text      | The quote content            |
-| created_at | timestamp | Auto-generated creation date |
-
-### `user_profile`
-
-| Column     | Type      | Description                  |
-| ---------- | --------- | ---------------------------- |
-| id         | int       | Auto-increment primary key   |
-| name       | text      | User's name                  |
-| quote      | text      | User-created quote           |
-| created_at | timestamp | Auto-generated creation date |
-
-### `user_favorites`
-
-| Column    | Type | Description                   |
-| --------- | ---- | ----------------------------- |
-| id        | int  | Auto-increment primary key    |
-| user_name | text | Name of the user saving quote |
-| post_id   | int  | Reference to `post_flow.id`   |
-
----
-
-## Setup Instructions
-
-### 1. Backend
-
-1. Clone the repo and install dependencies:
-
-```bash
+Setup Instructions
+1. Weather Microservice (Port 3001)
+Navigate to the microservice directory and install dependencies:
+Bash
 npm install
-```
 
-2. Configure environment variables in `.env`:
+Configure .env:
+Code snippet
+myAPIKey=your_visual_crossing_api_key
+SERVICE_KEY=your_shared_secret_key
 
-```env
+Start the service:
+Bash
+node weatherService.js
+
+2. Main Backend (Port 3000)
+Install dependencies:
+Bash
+npm install
+
+Configure environment variables in .env:
+Code snippet
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
+SERVICE_KEY=your_shared_secret_key (must match microservice)
 PORT=3000
-```
 
-3. Run the server:
-
-```bash
+Run the server:
+Bash
 npm run dev
-```
 
-The backend will start at `http://localhost:3000`.
-
----
-
-### 2. Frontend
-
-1. Navigate to the frontend folder and install dependencies:
-
-```bash
+3. Frontend
+Install dependencies:
+Bash
 npm install
-```
 
-2. Start the React app:
-
-```bash
+Start the React app:
+Bash
 npm start
-```
 
-3. The app will be accessible at `http://localhost:5173` (or default React port).
 
----
+API Endpoints
+Weather (via Proxy)
+Method
+Endpoint
+Description
+GET
+/get-weather
+Fetches weather via Microservice (Zip/Date req)
 
-## API Endpoints
+Posts
+Method
+Endpoint
+Description
+GET
+/posts
+Get all quotes from feed
+POST
+/posts
+Add a new quote to feed
 
-### Posts
+Favorites
+Method
+Endpoint
+Description
+POST
+/favorites
+Save a post to user's favorites
+GET
+/favorites/:user_name
+Get all favorites for a user
 
-| Method | Endpoint | Description              |
-| ------ | -------- | ------------------------ |
-| GET    | /posts   | Get all quotes from feed |
-| POST   | /posts   | Add a new quote to feed  |
 
-### User Profile Quotes
+Usage
+Feed Page:
+Browse global quotes.
+View automatic weather updates for your default location.
+Save quotes to favorites by clicking ❤️ Save.
+Weather Search:
+Enter a Zip Code and Date in the Weather Widget to see historical or current data.
+Create Quote:
+Click Create → enter name and quote → Post.
+Quote appears immediately in the feed.
+Profile Page:
+Click Profile to view saved quotes against a beautiful glassmorphism backdrop.
 
-| Method | Endpoint      | Description                  |
-| ------ | ------------- | ---------------------------- |
-| GET    | /user_profile | Get all user-created quotes  |
-| POST   | /user_profile | Add a new user-created quote |
-
-### Favorites
-
-| Method | Endpoint              | Description                     |
-| ------ | --------------------- | ------------------------------- |
-| POST   | /favorites            | Save a post to user's favorites |
-| GET    | /favorites/:user_name | Get all favorites for a user    |
-
----
-
-## Usage
-
-1. **Feed Page:**
-
-   * Browse global quotes.
-   * Save quotes to favorites by clicking **❤ Save**.
-
-2. **Create Quote:**
-
-   * Click **Create** → enter name and quote → Post.
-   * Quote appears immediately in the feed and is saved to `user_profile`.
-
-3. **Profile Page:**
-
-   * Click **Profile** to view saved quotes.
-   * Only quotes the user has saved appear here.
-
-4. **Pagination:**
-
-   * Navigate through quotes 10 at a time using **Next** button.
-
----
-
-## Future Enhancements
-
-* Highlight saved quotes in feed (like TikTok likes).
-* Add delete functionality for user quotes and favorites.
-* Add search/filter by keywords or author.
-* Add reactions: heart, thumbs-up, share.
-* Support user authentication with Supabase Auth.
-
-created by Sally & Isaac Watson
-
+Future Enhancements
+Add delete functionality for user quotes and favorites.
+Persistent weather caching using Redis.
+Add reactions: heart, thumbs-up, share.
+Support user authentication with Supabase Auth.
+Created by Sally & Isaac Watson
 
