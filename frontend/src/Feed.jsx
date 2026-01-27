@@ -16,16 +16,17 @@ export default function Feed({ user, onLogout }) {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-
+  const [weather,setWeather]=useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
   const itemList = 10; // number of quotes per page
   const [startIndex, setStartIndex] = useState(0);
 
   // Fetch posts on mount
   useEffect(() => {
     fetchPosts();
+    
   }, []);
 
-  // Search functionality: filters posts by quote text or author
   useEffect(() => {
     if (!search.trim()) {
       setFilteredPosts(posts);
@@ -41,6 +42,7 @@ export default function Feed({ user, onLogout }) {
     setStartIndex(0); // Reset pagination on new search
   }, [search, posts]);
 
+
   // Fetch posts from Supabase
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -53,6 +55,8 @@ export default function Feed({ user, onLogout }) {
       setFilteredPosts(data);
     }
   };
+
+
 
   // Save quote to user_profile
   const handleSave = async (post) => {
@@ -92,11 +96,46 @@ export default function Feed({ user, onLogout }) {
     );
   };
 
+const fetchWeather = async (zipCode = "90210") => {
+    setWeatherLoading(true);
+    try {
+      const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      const response = await fetch(`http://localhost:3000/get-weather?zip=${zipCode}&date=${today}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        setWeather(data[0]); 
+      }
+    } catch (err) {
+      console.error("Weather fetch failed", err);
+    } finally {
+      setWeatherLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+    fetchWeather("10001"); 
+  }, []);
+
   
   return (
     <div className="feed-page">
       <FeedHeader user={user} />
+      
+      {/* Weather Widget Display */}
+      <div className="weather-widget" style={{ textAlign: 'center', padding: '10px', background: '#f0f0f0', borderRadius: '8px', margin: '10px' }}>
+        {weatherLoading ? (
+          <p>Loading weather...</p>
+        ) : weather ? (
+          <p> Current Temp: <strong>{weather.temp}°F</strong> on {weather.datetime}</p>
+        ) : (
+          <p>Weather data unavailable</p>
+        )}
+      </div>
 
+      
       <NavBar
         onExplore={fetchPosts}
         onCreate={() => setShowCreate(true)}

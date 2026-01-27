@@ -7,7 +7,7 @@ const PORT = 3001;
 const myAPIKey = process.env.myAPIKey;
 const SERVICE_KEY = process.env.SERVICE_KEY;
 
-// Simple cache
+// Simple in-memory cache
 const weatherCache = {};
 
 app.get("/", (req, res) => {
@@ -49,6 +49,7 @@ app.get("/weather", async (req, res) => {
 
     const data = await response.json();
 
+    
     const days = data.days.map((day) => ({
       datetime: day.datetime,
       temp: day.temp,
