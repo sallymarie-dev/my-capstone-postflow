@@ -6,7 +6,7 @@ import NavBar from "./components/NavBar";
 import SearchBar from "./components/SearchBar";
 import QuoteGrid from "./components/QuoteGrid";
 import CreateQuoteModal from "./components/CreateQuoteModal";
-
+import WeatherSearch from "./components/WeatherSearch";
 import "./index.css";
 
 export default function Feed({ user, onLogout }) {
@@ -125,11 +125,12 @@ const fetchWeather = async (zipCode = "90210") => {
       <FeedHeader user={user} />
       
       {/* Weather Widget Display */}
+      <WeatherSearch />
       <div className="weather-widget" style={{ textAlign: 'center', padding: '10px', background: '#f0f0f0', borderRadius: '8px', margin: '10px' }}>
         {weatherLoading ? (
           <p>Loading weather...</p>
         ) : weather ? (
-          <p> Current Temp: <strong>{weather.temp}°F</strong> on {weather.datetime}</p>
+          <p> New York Current Temp: <strong>{weather.temp}°F</strong> on {weather.datetime}</p>
         ) : (
           <p>Weather data unavailable</p>
         )}

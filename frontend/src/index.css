@@ -5,8 +5,6 @@ body {
   padding: 0;
   background-color: #0ba7f0;
 }
-
-
 .btn {
   padding: 12px 24px;
   font-size: 16px;
@@ -16,12 +14,9 @@ body {
   cursor: pointer;
   transition: 0.3s;
 }
-
 .btn:hover {
   opacity: 0.9;
 }
-
-
 .logo-img,
 .feed-logo {
   display: block;
@@ -29,7 +24,6 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   margin: 1rem auto;
 }
-
 .feed-logo {
   position: absolute;
   top: 16px;
@@ -38,13 +32,10 @@ body {
   height: 60px;
   border-radius: 8px;
 }
-
 .logo-img {
   width: 300px;
   height: auto;
 }
-
-
 .feed-tagline,
 .tagline {
   font-size: 35px;
@@ -52,7 +43,6 @@ body {
   color: #014421;
   margin: 16px 0;
 }
-
 h1, h3, h4 {
   margin: 0.5rem 0;
 }
@@ -253,4 +243,9 @@ textarea {
 }
 @media (max-width: 600px) {
   .user-profiles-grid { column-count: 1; margin-left: 0; }
+}
+input[type="date"] {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: inherit;
 }

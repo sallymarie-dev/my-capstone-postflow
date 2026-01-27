@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "./supabase";
-import NavBar from "./components/NavBar"; // Adjust path if necessary
+import NavBar from "./components/NavBar";
 
 export default function UserProfile() {
   const [quotes, setQuotes] = useState([]);
@@ -37,7 +37,7 @@ export default function UserProfile() {
     <div className="profile-page">
       <NavBar 
         onExplore={() => navigate("/feed")} 
-        onCreate={() => navigate("/feed")} // Or your specific logic
+        onCreate={() => navigate("/feed")} 
         onProfile={() => navigate("/profile")}
       />
       
