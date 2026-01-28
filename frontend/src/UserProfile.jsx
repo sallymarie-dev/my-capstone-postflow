@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "./supabase";
 import NavBar from "./components/NavBar";
+import WeatherSearch from "./components/WeatherSearch";
 
 export default function UserProfile() {
   const [quotes, setQuotes] = useState([]);
@@ -43,7 +44,7 @@ export default function UserProfile() {
       
       <div className="container" style={{ margin: "20px auto", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}>
         <h1>Your Saved Quotes</h1>
-        
+        <WeatherSearch />
         {loading ? (
           <p>Loading your quotes...</p>
         ) : !quotes.length ? (
