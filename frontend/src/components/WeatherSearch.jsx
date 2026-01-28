@@ -65,7 +65,7 @@ export default function WeatherSearch() {
         ) : weather ? (
           <p>
             <h3>
-            🌡️Temperature changes your mood often. Here's the temp the area🌡️</h3><strong>{weather.temp}°F</strong> in {zip} on {weather.datetime}
+            🌡️Temperature changes your mood often. Here's the temp in the area🌡️</h3><strong>{weather.temp}°F</strong> in {zip} on {weather.datetime}
           </p>
         ) : (
           <p style={{ opacity: 0.6 }}>Enter details to see the weather</p>
