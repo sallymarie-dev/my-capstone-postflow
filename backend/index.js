@@ -18,15 +18,24 @@ app.post("/user_profile", async (req, res) => {
   const { name, quote } = req.body;
   if (!name || !quote)
     return res.status(400).json({ error: "Name and quote required" });
-
-  const { data, error } = await supabase
+try{
+  const profileInsert = await supabase
     .from("user_profile")
     .insert([{ name, quote }])
     .select()
     .single();
+const feedInsert = await supabase
+      .from("post_flow")
+      .insert([{ author: name, quote: quote }]);
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.status(201).json(data);
+ if (profileInsert.error) throw profileInsert.error;
+    if (feedInsert.error) throw feedInsert.error;
+
+    res.status(201).json({ message: "Successfully added to Profile and Feed" });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // READ all user quotes
