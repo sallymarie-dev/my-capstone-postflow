@@ -163,7 +163,7 @@ const fetchWeather = async (zipCode = "90210") => {
         <CreateQuoteModal
           user={user}
           onClose={() => setShowCreate(false)}
-          onCreated={fetchPosts}
+          onQuoteCreated={fetchPosts}
         />
       )}
     </div>

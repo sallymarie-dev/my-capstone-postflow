@@ -37,10 +37,10 @@ export default function CreateQuoteModal({ onClose, onQuoteCreated, user }) {
             onChange={(e) => setQuote(e.target.value)}
           />
           <div className="modal-actions">
-            <button type="button" onClick={onClose}>
+            <button className="btn" type="button" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="primary">
+            <button type="submit" className="btn primary">
               Post
             </button>
           </div>
