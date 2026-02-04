@@ -16,7 +16,7 @@ export default function Feed({ user, onLogout }) {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-  const [weather,setWeather]=useState(null);
+  const [weather, setWeather] = useState(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const itemList = 10; // number of quotes per page
   const [startIndex, setStartIndex] = useState(0);
@@ -24,7 +24,7 @@ export default function Feed({ user, onLogout }) {
   // Fetch posts on mount
   useEffect(() => {
     fetchPosts();
-    
+
   }, []);
 
   useEffect(() => {
@@ -65,7 +65,11 @@ export default function Feed({ user, onLogout }) {
       {
         user_id: authUser.id,
         quote: post.quote,
+        author: post.author,
         name: authUser.user_metadata?.full_name || authUser.email,
+
+
+
       },
     ]);
 
@@ -91,16 +95,16 @@ export default function Feed({ user, onLogout }) {
     );
   };
 
-const fetchWeather = async (zipCode = "90210") => {
+  const fetchWeather = async (zipCode = "90210") => {
     setWeatherLoading(true);
     try {
       const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
       const response = await fetch(`http://localhost:3000/get-weather?zip=${zipCode}&date=${today}`);
-      
+
       if (response.ok) {
         const data = await response.json();
-        
-        setWeather(data[0]); 
+
+        setWeather(data[0]);
       }
     } catch (err) {
       console.error("Weather fetch failed", err);
@@ -111,14 +115,14 @@ const fetchWeather = async (zipCode = "90210") => {
 
   useEffect(() => {
     fetchPosts();
-    fetchWeather("10001"); 
+    fetchWeather("10001");
   }, []);
 
-  
+
   return (
     <div className="feed-page">
       <FeedHeader user={user} />
-      
+
       {/* Weather Widget Display */}
       <WeatherSearch />
       <div className="weather-widget" style={{ textAlign: 'center', padding: '10px', background: '#f0f0f0', borderRadius: '8px', margin: '10px' }}>
@@ -131,7 +135,7 @@ const fetchWeather = async (zipCode = "90210") => {
         )}
       </div>
 
-      
+
       <NavBar
         onExplore={fetchPosts}
         onCreate={() => setShowCreate(true)}
