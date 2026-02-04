@@ -18,6 +18,7 @@ app.post("/user_profile", async (req, res) => {
   const { name, quote } = req.body;
   if (!name || !quote)
     return res.status(400).json({ error: "Name and quote required" });
+  // console.log(`new quote request from :${name}`);
 try{
   const profileInsert = await supabase
     .from("user_profile")
