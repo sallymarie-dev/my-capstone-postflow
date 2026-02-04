@@ -11,7 +11,7 @@ export default function CreateQuoteModal({ onClose, onQuoteCreated, user }) {
       const res = await fetch("http://localhost:3000/user_profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: user?.name || "Guest", quote }),
+        body: JSON.stringify({ name: user?.name || "Guest", quote, author }),
       });
 
       if (!res.ok) throw new Error("Failed to post quote");

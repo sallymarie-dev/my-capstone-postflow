@@ -25,9 +25,14 @@ app.get("/weather", async (req, res) => {
     //  Query params
     const { zip, date } = req.query;
 
-    if (!zip) return res.status(400).json({ error: "zip is required" });
-    if (!date) return res.status(400).json({ error: "date is required" });
+    if (!zip) {
+      console.log("zip is not provided");
+      return res.status(400).json({ error: "zip is required" });
+    }
 
+    if (!date) return res.status(400).json({ error: "date is required" });
+    console.log(zip);
+    console.log(date);
     //  Cache key
     const cacheKey = `${zip}-${date}`;
 
@@ -49,7 +54,6 @@ app.get("/weather", async (req, res) => {
 
     const data = await response.json();
 
-    
     const days = data.days.map((day) => ({
       datetime: day.datetime,
       temp: day.temp,

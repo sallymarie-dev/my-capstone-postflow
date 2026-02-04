@@ -23,7 +23,7 @@ export default function UserProfile() {
 
       const { data, error } = await supabase
         .from("user_profile")
-        .select("id, quote, name, created_at")
+        .select("id, quote, author, name, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -33,15 +33,15 @@ export default function UserProfile() {
     }
     setLoading(false);
   };
-
+  console.log(quotes)
   return (
     <div className="profile-page">
-      <NavBar 
-        onExplore={() => navigate("/feed")} 
-        onCreate={() => navigate("/feed")} 
+      <NavBar
+        onExplore={() => navigate("/feed")}
+        onCreate={() => navigate("/feed")}
         onProfile={() => navigate("/profile")}
       />
-      
+
       <div className="container" style={{ margin: "20px auto", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(10px)" }}>
         <h1>Your Saved Quotes</h1>
         <WeatherSearch />
@@ -55,7 +55,10 @@ export default function UserProfile() {
               <div key={q.id} className="user-profile-card">
                 <p className="user-quote">"{q.quote}"</p>
                 <div className="profile-footer">
-                  <span className="profile-name">{q.name}</span>
+                  <span className="profile-name">from {q.name}</span>
+                  &nbsp;
+                  <span className="profile-name">by {q.author}</span>
+
                 </div>
               </div>
             ))}

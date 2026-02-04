@@ -29,7 +29,7 @@ const feedInsert = await supabase
       .from("post_flow")
       .insert([{ author: name, quote: quote }]);
 
- if (profileInsert.error) throw profileInsert.error;
+    if (profileInsert.error) throw profileInsert.error;
     if (feedInsert.error) throw feedInsert.error;
 
     res.status(201).json({ message: "Successfully added to Profile and Feed" });
@@ -205,18 +205,20 @@ app.get("/favorites/:user_name", async (req, res) => {
   res.json(data.map((d) => d.post_flow));
 });
 
-
 app.get("/get-weather", async (req, res) => {
   const { zip, date } = req.query;
   const WEATHER_SERVICE_URL = "http://localhost:3001/weather";
-  const SERVICE_KEY = process.env.SERVICE_KEY; 
+  const SERVICE_KEY = process.env.SERVICE_KEY;
   try {
-    const response = await fetch(`${WEATHER_SERVICE_URL}?zip=${zip}&date=${date}`, {
-      method: "GET",
-      headers: {
-        "x-api-key": SERVICE_KEY, 
+    const response = await fetch(
+      `${WEATHER_SERVICE_URL}?zip=${zip}&date=${date}`,
+      {
+        method: "GET",
+        headers: {
+          "x-api-key": SERVICE_KEY,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -227,6 +229,7 @@ app.get("/get-weather", async (req, res) => {
     res.json(weatherData);
   } catch (error) {
     console.error("Failed to connect to weather service:", error);
+    console.log(error);
     res.status(500).json({ error: "Could not reach weather microservice" });
   }
 });
